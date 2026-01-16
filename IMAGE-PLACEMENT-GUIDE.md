@@ -1,72 +1,59 @@
-# Image Placement Guide for Solid Gear Designs Website
-
-Your premium B2B consulting website has been built and is ready for your images.
+# Image Placement Guide for Solid Gear Designs
 
 ## Required Images
 
-Please place the following images in the `/public/images/` directory with these exact filenames:
+Place the following 5 images in `/public/images/` with these exact filenames:
 
-### 1. **logo-banner.png**
-   - Your enhanced banner-style Solid Gear Designs logo
-   - Used in: Header navigation
-   - Recommended dimensions: Width ~200-300px, Height ~50-70px
-   - Format: PNG with transparent background preferred
+### 1. logo-circular.png
+- **Location:** Navigation header
+- **Purpose:** Primary logo mark for site navigation
+- **Recommended size:** 64x64px minimum (square aspect ratio)
+- **Format:** PNG with transparent background
 
-### 2. **logo-circular.png**
-   - Your circular gear "S" logo mark
-   - Used in: Footer
-   - Recommended dimensions: 64x64px or larger (square)
-   - Format: PNG with transparent background preferred
+### 2. blueprint.jpg
+- **Location:** Hero section background
+- **Purpose:** Technical blueprint drawing background with dark overlay
+- **Recommended size:** 1920x1080px minimum
+- **Format:** JPG
 
-### 3. **blueprint-background.jpg**
-   - The blueprint-style mechanical drawing image
-   - Used in: Hero section background (with dark navy overlay)
-   - Recommended dimensions: At least 1920x1080px
-   - Format: JPG or PNG
+### 3. cad-computer.jpg
+- **Location:** Solutions/Services section
+- **Purpose:** Shows engineering work in action
+- **Recommended size:** 800x600px minimum
+- **Format:** JPG
 
-### 4. **cad-computer.jpg**
-   - The CAD-on-computer image showing engineering work
-   - Used in: "How We Help" solutions section
-   - Recommended dimensions: At least 800x600px
-   - Format: JPG or PNG
+### 4. sergio-jorge.jpg
+- **Location:** About section
+- **Purpose:** Professional photo of founder
+- **Recommended size:** 600x800px (portrait orientation)
+- **Format:** JPG
 
-### 5. **sergio-jorge.jpg**
-   - Professional photo of Sergio Jorge
-   - Used in: About section
-   - Recommended dimensions: At least 600x800px (portrait orientation)
-   - Format: JPG or PNG
+### 5. logo-banner.png (optional)
+- **Location:** Footer (if used)
+- **Purpose:** Alternative horizontal logo
+- **Format:** PNG with transparent background
 
 ## Directory Structure
 
 ```
-project/
-└── public/
-    └── images/
-        ├── logo-banner.png
-        ├── logo-circular.png
-        ├── blueprint-background.jpg
-        ├── cad-computer.jpg
-        └── sergio-jorge.jpg
+/public/images/
+├── logo-circular.png    (navigation)
+├── blueprint.jpg        (hero background)
+├── cad-computer.jpg     (services section)
+├── sergio-jorge.jpg     (about section)
+└── logo-banner.png      (optional, footer)
 ```
 
-## Next Steps
+## Technical Notes
 
-1. Place all five images in the `/public/images/` directory with the exact filenames listed above
-2. The website will automatically display your images
-3. Refresh your browser to see the images loaded
-
-## Image Optimization Tips
-
-- Compress images before uploading to improve load times
-- Use WebP format for better compression (rename extensions accordingly in components if using WebP)
-- Ensure images are high quality but not unnecessarily large (balance quality vs. file size)
-- Blueprint background should be sharp enough to see technical linework through the overlay
+- All image paths use `import.meta.env.BASE_URL` for proper Vite resolution
+- Images work correctly in both preview iframe and separate browser tabs
+- Graceful fallback if images are missing (layout remains intact)
 
 ## Color Scheme Reference
 
-Your website uses this exact color scheme:
-- **Deep Navy**: #0F1B27 (60% - dominant)
-- **Warm Light Grey**: #F2F2F2 (30% - secondary backgrounds)
-- **Copper Gold**: #BF9F5A (10% - accents and CTAs)
-- **Charcoal Dark**: #1A1A1A (body text)
-- **White**: #FFFFFF (panels and contrast)
+- **Deep Navy:** #0F1B27
+- **Copper Gold:** #BF9F5A
+- **Warm Light Grey:** #F2F2F2
+- **Charcoal Dark:** #1A1A1A
+- **White:** #FFFFFF

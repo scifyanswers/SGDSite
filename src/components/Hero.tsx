@@ -26,20 +26,12 @@ export default function Hero() {
           Reduce scrap. Accelerate launches. Get senior manufacturing engineering bandwidth when you need it.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button
-            onClick={() => scrollToSection("contact")}
-            className="bg-copper text-navy px-8 py-4 rounded-md font-bold text-lg hover:bg-opacity-90 transition-all shadow-lg w-full sm:w-auto"
-          >
-            Book a Call
-          </button>
-          <button
-            onClick={() => scrollToSection("results")}
-            className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-md font-bold text-lg hover:bg-white hover:text-navy transition-all w-full sm:w-auto"
-          >
-            See Results
-          </button>
-        </div>
+        <button
+          onClick={() => scrollToSection("contact")}
+          className="bg-copper text-navy px-8 py-4 rounded-md font-bold text-lg hover:bg-opacity-90 transition-all shadow-lg"
+        >
+          Book a Call
+        </button>
       </div>
     </section>
   );

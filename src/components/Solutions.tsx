@@ -21,13 +21,6 @@ export default function Solutions() {
     }
   ];
 
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <section id="services" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -37,7 +30,7 @@ export default function Solutions() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             {services.map((service, index) => {
               const Icon = service.icon;
@@ -68,15 +61,6 @@ export default function Solutions() {
               className="rounded-lg shadow-xl w-full"
             />
           </div>
-        </div>
-
-        <div className="text-center">
-          <button
-            onClick={scrollToContact}
-            className="bg-copper text-navy px-8 py-4 rounded-md font-bold text-lg hover:bg-opacity-90 transition-all shadow-lg"
-          >
-            Book a Call
-          </button>
         </div>
       </div>
     </section>
