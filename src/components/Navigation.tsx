@@ -50,26 +50,24 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="h-20 flex items-center justify-between">
             {/* Brand */}
-            <a
-              href="#top"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                setIsMenuOpen(false);
-              }}
-              className="flex items-center"
-              aria-label="Solid Gear Designs Home"
-            >
-              {/* Logo fills the bar height; avoids 'tiny' look */}
-              <div className="h-14 md:h-16 flex items-center">
-                <img
-                  src={`${baseUrl}images/logo-banner.png`}
-                  alt="Solid Gear Designs"
-                  className="h-full w-auto max-h-none object-contain"
-                />
-              </div>
-            </a>
-
+           <a
+  href="#top"
+  onClick={(e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsMenuOpen(false);
+  }}
+  className="flex items-center"
+>
+  <div className="bg-white/95 rounded-md px-3 py-2 shadow-sm">
+    <img
+      src={`${baseUrl}images/logo-banner.png`}
+      alt="Solid Gear Designs"
+      className="h-10 md:h-12 w-auto"
+    />
+  </div>
+</a>
+            
             {/* Desktop nav (text links only; no CTA button) */}
             <nav className="hidden md:flex items-center gap-10">
               <LinkButton id="services" label="Services" />
