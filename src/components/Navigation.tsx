@@ -11,7 +11,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-navy border-b border-white/10">
+<nav className="sticky top-0 z-50 bg-[#0F1B27]/75 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-[72px]">
 
