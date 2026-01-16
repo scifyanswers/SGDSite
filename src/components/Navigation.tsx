@@ -21,7 +21,7 @@ export default function Navigation() {
             className="flex items-center gap-3"
           >
             <img
-              src={`${baseUrl}images/logo-circular.png`}
+              src={`${baseUrl}images/logo-banner.png`}
               alt="Solid Gear Designs"
               className="h-14 w-14"
             />
