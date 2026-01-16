@@ -1,164 +1,98 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
-/**
- * Elite Navigation (High-trust B2B)
- * - Not sticky (no fixed positioning)
- * - No CTA button in nav
- * - Designed to sit cleanly over a dark hero (or any dark top section)
- * - Vite-safe asset path via import.meta.env.BASE_URL
- */
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const baseUrl = import.meta.env.BASE_URL;
 
   const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
       setIsMenuOpen(false);
     }
   };
 
-  // Premium touch: prevent background scroll when mobile menu is open
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMenuOpen]);
-
-  const LinkButton = ({
-    id,
-    label,
-  }: {
-    id: string;
-    label: string;
-  }) => (
-    <button
-      onClick={() => scrollToSection(id)}
-      className="text-white/85 hover:text-white transition-colors text-sm font-semibold tracking-wide"
-    >
-      {label}
-    </button>
-  );
-
   return (
-    <header className="relative z-50">
-      {/* Non-sticky top bar (elite, low-pressure) */}
-      <div className="bg-navy backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="h-20 flex items-center justify-between">
-            {/* Brand */}
-           <a
-  href="#top"
-  onClick={(e) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setIsMenuOpen(false);
-  }}
-  className="flex items-center"
->
-  <div className="bg-white/95 rounded-md px-3 py-2 shadow-sm">
-    <img
-      src={`${baseUrl}images/logo-banner.png`}
-      alt="Solid Gear Designs"
-      className="h-10 md:h-12 w-auto"
-    />
-  </div>
-</a>
-            
-            {/* Desktop nav (text links only; no CTA button) */}
-            <nav className="hidden md:flex items-center gap-10">
-              <LinkButton id="services" label="Services" />
-              <LinkButton id="results" label="Results" />
-              <LinkButton id="about" label="About" />
-              <LinkButton id="contact" label="Contact" />
-            </nav>
+    <nav className="sticky top-0 z-50 bg-navy border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-16">
 
-            {/* Mobile toggle */}
+          {/* Logo */}
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              setIsMenuOpen(false);
+            }}
+            className="flex items-center"
+          >
+            <div className="bg-white rounded-md px-3 py-2 shadow-sm">
+              <img
+                src={`${baseUrl}images/logo-circular.png`}
+                alt="Solid Gear Designs"
+                className="h-10 w-10 md:h-11 md:w-11"
+              />
+            </div>
+          </a>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
             <button
-              className="md:hidden text-white/90 hover:text-white transition"
-              onClick={() => setIsMenuOpen(true)}
-              aria-label="Open menu"
+              onClick={() => scrollToSection("services")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
             >
-              <Menu size={28} />
+              Services
+            </button>
+            <button
+              onClick={() => scrollToSection("results")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
+            >
+              Results
+            </button>
+            <button
+              onClick={() => scrollToSection("about")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
+            >
+              Contact
             </button>
           </div>
+
+          {/* Mobile Toggle */}
+          <button
+            className="md:hidden text-white/90"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile overlay + drawer */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[60] md:hidden">
-          {/* Backdrop */}
-          <button
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsMenuOpen(false)}
-            aria-label="Close menu"
-          />
-
-          {/* Drawer */}
-          <aside className="absolute top-0 right-0 h-full w-[86%] max-w-sm bg-navy/95 border-l border-white/10 shadow-2xl">
-            <div className="px-6 py-6 flex items-center justify-between border-b border-white/10">
-              <div className="h-12 flex items-center">
-                <img
-                  src={`${baseUrl}images/logo-banner.png`}
-                  alt="Solid Gear Designs"
-                  className="h-full w-auto max-h-none object-contain"
-                />
-              </div>
-
+        <div className="md:hidden bg-navy border-t border-white/10">
+          <div className="px-6 py-4 space-y-2">
+            {["services", "results", "about", "contact"].map((section) => (
               <button
-                className="text-white/85 hover:text-white transition"
-                onClick={() => setIsMenuOpen(false)}
-                aria-label="Close menu"
+                key={section}
+                onClick={() => scrollToSection(section)}
+                className="block w-full text-left px-4 py-3 rounded-md
+                           text-white/80 hover:text-white hover:bg-white/5 transition"
               >
-                <X size={26} />
+                {section.charAt(0).toUpperCase() + section.slice(1)}
               </button>
-            </div>
-
-            <div className="px-6 py-6 space-y-2">
-              <button
-                onClick={() => scrollToSection("services")}
-                className="w-full text-left rounded-2xl px-4 py-3 text-white/90 hover:text-white hover:bg-white/5 transition font-semibold"
-              >
-                Services
-              </button>
-              <button
-                onClick={() => scrollToSection("results")}
-                className="w-full text-left rounded-2xl px-4 py-3 text-white/90 hover:text-white hover:bg-white/5 transition font-semibold"
-              >
-                Results
-              </button>
-              <button
-                onClick={() => scrollToSection("about")}
-                className="w-full text-left rounded-2xl px-4 py-3 text-white/90 hover:text-white hover:bg-white/5 transition font-semibold"
-              >
-                About
-              </button>
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="w-full text-left rounded-2xl px-4 py-3 text-white/90 hover:text-white hover:bg-white/5 transition font-semibold"
-              >
-                Contact
-              </button>
-
-              {/* No CTA button here either—keep it elite/low-pressure */}
-              <p className="text-white/55 text-xs mt-4 leading-relaxed">
-                Senior manufacturing engineering support for high-mix teams—clear decisions, fewer iterations,
-                faster launches.
-              </p>
-            </div>
-
-            <div className="absolute bottom-0 left-0 right-0 px-6 py-5 border-t border-white/10">
-              <p className="text-white/50 text-xs">
-                © {new Date().getFullYear()} Solid Gear Designs
-              </p>
-            </div>
-          </aside>
+            ))}
+          </div>
         </div>
       )}
-    </header>
+    </nav>
   );
 }
