@@ -30,7 +30,7 @@ export default function Navigation() {
           >
             <div className="bg-white rounded-md px-3 py-2 shadow-sm">
               <img
-                src={`${baseUrl}images/logo-circular.png`}
+                src={`${baseUrl}images/logo-banner.png`}
                 alt="Solid Gear Designs"
                 className="h-10 w-10 md:h-11 md:w-11"
               />
