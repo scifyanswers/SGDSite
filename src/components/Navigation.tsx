@@ -1,33 +1,39 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
+/**
+ * Elite Navigation (High-trust B2B)
+ * - Not sticky (no fixed positioning)
+ * - No CTA button in nav
+ * - Designed to sit cleanly over a dark hero (or any dark top section)
+ * - Vite-safe asset path via import.meta.env.BASE_URL
+ */
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const baseUrl = import.meta.env.BASE_URL;
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
       setIsMenuOpen(false);
     }
   };
 
-  // Lock body scroll when mobile menu is open (premium feel)
+  // Premium touch: prevent background scroll when mobile menu is open
   useEffect(() => {
-    if (isMenuOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
+    document.body.style.overflow = isMenuOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
 
-  const NavLink = ({
-    label,
+  const LinkButton = ({
     id,
+    label,
   }: {
-    label: string;
     id: string;
+    label: string;
   }) => (
     <button
       onClick={() => scrollToSection(id)}
@@ -39,11 +45,11 @@ export default function Navigation() {
 
   return (
     <header className="relative z-50">
-      {/* Non-sticky, premium top bar */}
-      <div className="bg-navy/90 backdrop-blur-md border-b border-white/10">
+      {/* Non-sticky top bar (elite, low-pressure) */}
+      <div className="bg-navy/70 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="h-20 flex items-center justify-between">
-            {/* Logo: fills header height */}
+            {/* Brand */}
             <a
               href="#top"
               onClick={(e) => {
@@ -54,6 +60,7 @@ export default function Navigation() {
               className="flex items-center"
               aria-label="Solid Gear Designs Home"
             >
+              {/* Logo fills the bar height; avoids 'tiny' look */}
               <div className="h-14 md:h-16 flex items-center">
                 <img
                   src={`${baseUrl}images/logo-banner.png`}
@@ -63,22 +70,12 @@ export default function Navigation() {
               </div>
             </a>
 
-            {/* Desktop nav */}
+            {/* Desktop nav (text links only; no CTA button) */}
             <nav className="hidden md:flex items-center gap-10">
-              <NavLink label="Services" id="services" />
-              <NavLink label="Results" id="results" />
-              <NavLink label="About" id="about" />
-              <NavLink label="Contact" id="contact" />
-
-              {/* Single, subtle CTA (less “salesy” than Book a Call everywhere) */}
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="ml-2 px-4 py-2 rounded-xl border border-white/15 text-white/90
-                           hover:text-white hover:border-white/25 hover:bg-white/5
-                           transition font-semibold text-sm"
-              >
-                Request a Consult
-              </button>
+              <LinkButton id="services" label="Services" />
+              <LinkButton id="results" label="Results" />
+              <LinkButton id="about" label="About" />
+              <LinkButton id="contact" label="Contact" />
             </nav>
 
             {/* Mobile toggle */}
@@ -100,11 +97,11 @@ export default function Navigation() {
           <button
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsMenuOpen(false)}
-            aria-label="Close menu backdrop"
+            aria-label="Close menu"
           />
 
           {/* Drawer */}
-          <div className="absolute top-0 right-0 h-full w-[86%] max-w-sm bg-navy/95 border-l border-white/10 shadow-2xl">
+          <aside className="absolute top-0 right-0 h-full w-[86%] max-w-sm bg-navy/95 border-l border-white/10 shadow-2xl">
             <div className="px-6 py-6 flex items-center justify-between border-b border-white/10">
               <div className="h-12 flex items-center">
                 <img
@@ -149,18 +146,11 @@ export default function Navigation() {
                 Contact
               </button>
 
-              <div className="pt-4">
-                <button
-                  onClick={() => scrollToSection("contact")}
-                  className="w-full bg-copper text-navy px-6 py-3 rounded-2xl font-bold
-                             shadow-lg shadow-black/25 hover:brightness-110 transition"
-                >
-                  Request a Consult
-                </button>
-                <p className="text-white/55 text-xs mt-3 leading-relaxed">
-                  Senior manufacturing engineering support for high-mix teams. Fast, direct, and execution-focused.
-                </p>
-              </div>
+              {/* No CTA button here either—keep it elite/low-pressure */}
+              <p className="text-white/55 text-xs mt-4 leading-relaxed">
+                Senior manufacturing engineering support for high-mix teams—clear decisions, fewer iterations,
+                faster launches.
+              </p>
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 px-6 py-5 border-t border-white/10">
@@ -168,7 +158,7 @@ export default function Navigation() {
                 © {new Date().getFullYear()} Solid Gear Designs
               </p>
             </div>
-          </div>
+          </aside>
         </div>
       )}
     </header>
