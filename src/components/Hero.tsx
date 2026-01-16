@@ -3,18 +3,19 @@ export default function Hero() {
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20">
+    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${baseUrl}images/blueprint-background.jpg)` }}
+        style={{ backgroundImage: `url(${baseUrl}images/blueprint.jpg)` }} // <-- make sure this matches your actual file
       >
-        <div className="absolute inset-0 bg-navy opacity-70"></div>
+        {/* Premium overlay stack */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0F1B27]/85 via-[#0F1B27]/70 to-[#0F1B27]/90" />
+        <div className="absolute inset-0 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(circle_at_1px_1px,#ffffff_1px,transparent_0)] [background-size:24px_24px]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 text-center py-20">
@@ -24,15 +25,16 @@ export default function Hero() {
         <p className="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed">
           Reduce scrap. Accelerate launches. Get senior manufacturing engineering bandwidth when you need it.
         </p>
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
-            onClick={() => scrollToSection('contact')}
+            onClick={() => scrollToSection("contact")}
             className="bg-copper text-navy px-8 py-4 rounded-md font-bold text-lg hover:bg-opacity-90 transition-all shadow-lg w-full sm:w-auto"
           >
             Book a Call
           </button>
           <button
-            onClick={() => scrollToSection('results')}
+            onClick={() => scrollToSection("results")}
             className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-md font-bold text-lg hover:bg-white hover:text-navy transition-all w-full sm:w-auto"
           >
             See Results
