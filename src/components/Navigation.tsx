@@ -134,3 +134,8 @@ export default function Navigation() {
     </nav>
   );
 }
+<img
+  src={`${baseUrl}images/logo-banner.png`}
+  alt="Solid Gear Designs"
+  className="h-16 w-auto border-2 border-red-500"
+/>
