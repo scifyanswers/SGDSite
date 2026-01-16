@@ -46,7 +46,7 @@ export default function Navigation() {
   return (
     <header className="relative z-50">
       {/* Non-sticky top bar (elite, low-pressure) */}
-      <div className="bg-navy/70 backdrop-blur-md border-b border-white/10">
+      <div className="bg-navy backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="h-20 flex items-center justify-between">
             {/* Brand */}
