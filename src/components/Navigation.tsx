@@ -15,20 +15,23 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-[72px]">
 
-          {/* Brand */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-3"
-          >
-            <img
-              src={`${baseUrl}images/logo-banner.png`}
-              alt="Solid Gear Designs"
-              className="h-14 w-14"
-            />
-            <span className="hidden sm:block text-white font-semibold tracking-wide text-base">
-              Solid Gear Designs
-            </span>
-          </button>
+         {/* Brand */}
+<button
+  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+  className="flex items-center gap-3"
+>
+  <div className="rounded-full ring-1 ring-white/20 p-1.5">
+    <img
+      src={`${baseUrl}images/logo-circular.png`}
+      alt="Solid Gear Designs"
+      className="h-14 w-14"
+    />
+  </div>
+
+  <span className="hidden sm:block text-white font-semibold tracking-wide text-base">
+    Solid Gear Designs
+  </span>
+</button>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
