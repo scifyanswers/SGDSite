@@ -5,7 +5,7 @@ export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
 
   // ✅ Your booking method (email for now)
-  const TO_EMAIL = "sergio@solidgeardesigns.com";
+  const TO_EMAIL = "sergioj@solidgeardesigns.com";
 
   const [reason, setReason] = useState("GD&T / Tolerance Review");
   const [name, setName] = useState("");
