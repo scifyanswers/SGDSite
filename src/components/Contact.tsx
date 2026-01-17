@@ -2,16 +2,6 @@ import { useState, FormEvent } from "react";
 import { Mail, Clock, Shield, ChevronDown } from "lucide-react";
 
 const AIRTABLE_ENDPOINT_FALLBACK = "https://api.airtable.com/v0/appoZcE3LSbmki0aE/Table%201";
-const PERSONAL_EMAIL_DOMAINS = [
-  "gmail.com",
-  "yahoo.com",
-  "hotmail.com",
-  "outlook.com",
-  "icloud.com",
-  "aol.com",
-  "protonmail.com",
-  "proton.me",
-];
 
 export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
@@ -59,10 +49,19 @@ export default function Contact() {
     }
 
     const emailDomain = email.split("@")[1]?.toLowerCase();
-    if (emailDomain && PERSONAL_EMAIL_DOMAINS.includes(emailDomain)) {
-      setErrorMessage("Please use a company email for this intake.");
-      setIsSubmitting(false);
-      return;
+    if (emailDomain) {
+      try {
+        const mxResponse = await fetch(`https://dns.google/resolve?name=${emailDomain}&type=MX`);
+        const mxData = await mxResponse.json();
+
+        if (mxResponse.ok && (!mxData.Answer || mxData.Answer.length === 0)) {
+          setErrorMessage("That email domain can't receive mail. Please double-check the address.");
+          setIsSubmitting(false);
+          return;
+        }
+      } catch {
+        // Silently continue if MX check fails (network/CORS issue)
+      }
     }
 
     if (!description || description.length < 20) {
