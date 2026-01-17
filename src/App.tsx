@@ -1,26 +1,15 @@
-import Navigation from './components/Navigation';
-import Hero from './components/Hero';
-import PainPoints from './components/PainPoints';
-import Solutions from './components/Solutions';
-import Results from './components/Results';
-import Testimonials from './components/Testimonials';
-import About from './components/About';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <Navigation />
-      <Hero />
-      <PainPoints />
-      <Solutions />
-      <Results />
-      <Testimonials />
-      <About />
-      <Contact />
-      <Footer />
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+    </Routes>
   );
 }
 

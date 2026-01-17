@@ -11,16 +11,19 @@ export default function Footer() {
             className="h-16 w-16 mb-6"
           />
           <div className="flex gap-6 text-gray-400 text-sm mb-4">
-            <a href="#privacy" className="hover:text-copper transition-colors">
-              Privacy
+            <a href="/privacy" className="hover:text-copper transition-colors">
+              Privacy Policy
             </a>
             <span>|</span>
-            <a href="#terms" className="hover:text-copper transition-colors">
-              Terms
+            <a href="/terms" className="hover:text-copper transition-colors">
+              Terms of Use
             </a>
           </div>
+          <p className="text-gray-500 text-sm mb-2">
+            © 2026 Solid Gear Designs. All rights reserved.
+          </p>
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Solid Gear Designs. All rights reserved.
+            Serving manufacturing clients across the United States.
           </p>
         </div>
       </div>

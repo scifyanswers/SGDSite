@@ -5,17 +5,17 @@ export default function Results() {
     {
       icon: TrendingDown,
       stat: "Up to 85%",
-      label: "Reduction in Scrap"
+      label: "reduction in scrap"
     },
     {
       icon: Clock,
-      stat: "6 Weeks",
-      label: "Faster Launch Time"
+      stat: "~6 weeks",
+      label: "Launch timelines shortened"
     },
     {
       icon: CheckCircle,
-      stat: "90%",
-      label: "Supplier Defects Down"
+      stat: "Up to 90%",
+      label: "Supplier defects reduced"
     }
   ];
 
@@ -24,11 +24,11 @@ export default function Results() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Results Our Clients See
+            Measured Results
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {metrics.map((metric, index) => {
             const Icon = metric.icon;
             return (
@@ -48,6 +48,12 @@ export default function Results() {
               </div>
             );
           })}
+        </div>
+
+        <div className="text-center">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
+            Results vary by program, but our focus is always measurable manufacturing improvement.
+          </p>
         </div>
       </div>
     </section>

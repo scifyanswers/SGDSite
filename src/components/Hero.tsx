@@ -23,15 +23,23 @@ export default function Hero() {
           Engineering Expertise for High-Mix Manufacturers
         </h1>
         <p className="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed">
-          Reduce scrap. Accelerate launches. Get senior manufacturing engineering bandwidth when you need it.
+          Senior manufacturing engineering support to reduce scrap, stabilize production, and accelerate launches—without adding headcount.
         </p>
 
-        <button
-          onClick={() => scrollToSection("contact")}
-          className="bg-copper text-navy px-8 py-4 rounded-md font-bold text-lg hover:bg-opacity-90 transition-all shadow-lg"
-        >
-          Book a Call
-        </button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            onClick={() => scrollToSection("contact")}
+            className="bg-copper text-navy px-8 py-4 rounded-md font-bold text-lg hover:bg-opacity-90 transition-all shadow-lg"
+          >
+            Contact
+          </button>
+          <button
+            onClick={() => scrollToSection("results")}
+            className="text-white border border-white/30 px-8 py-4 rounded-md font-semibold text-lg hover:bg-white/10 transition-all"
+          >
+            View Outcomes
+          </button>
+        </div>
       </div>
     </section>
   );

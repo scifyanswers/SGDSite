@@ -35,15 +35,30 @@ export default function Navigation() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {["services", "results", "about", "contact"].map((item) => (
-              <button
-                key={item}
-                onClick={() => scrollTo(item)}
-                className="text-white/80 hover:text-white transition text-sm font-medium"
-              >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
-              </button>
-            ))}
+            <button
+              onClick={() => scrollTo("services")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
+            >
+              Services
+            </button>
+            <button
+              onClick={() => scrollTo("results")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
+            >
+              Outcomes
+            </button>
+            <button
+              onClick={() => scrollTo("about")}
+              className="text-white/80 hover:text-white transition text-sm font-medium"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollTo("contact")}
+              className="bg-copper text-navy px-5 py-2 rounded-md font-bold text-sm hover:bg-opacity-90 transition"
+            >
+              Contact
+            </button>
           </div>
 
           {/* Mobile Toggle */}
@@ -60,16 +75,34 @@ export default function Navigation() {
       {open && (
         <div className="md:hidden bg-navy border-t border-white/10">
           <div className="px-6 py-4 space-y-2">
-            {["services", "results", "about", "contact"].map((item) => (
-              <button
-                key={item}
-                onClick={() => scrollTo(item)}
-                className="block w-full text-left px-4 py-3 rounded-md
-                           text-white/80 hover:text-white hover:bg-white/5 transition"
-              >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
-              </button>
-            ))}
+            <button
+              onClick={() => scrollTo("services")}
+              className="block w-full text-left px-4 py-3 rounded-md
+                         text-white/80 hover:text-white hover:bg-white/5 transition"
+            >
+              Services
+            </button>
+            <button
+              onClick={() => scrollTo("results")}
+              className="block w-full text-left px-4 py-3 rounded-md
+                         text-white/80 hover:text-white hover:bg-white/5 transition"
+            >
+              Outcomes
+            </button>
+            <button
+              onClick={() => scrollTo("about")}
+              className="block w-full text-left px-4 py-3 rounded-md
+                         text-white/80 hover:text-white hover:bg-white/5 transition"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollTo("contact")}
+              className="block w-full text-left px-4 py-3 rounded-md
+                         bg-copper text-navy font-bold hover:bg-opacity-90 transition"
+            >
+              Contact
+            </button>
           </div>
         </div>
       )}

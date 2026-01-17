@@ -5,7 +5,7 @@ export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
 
   // ✅ Your booking method (email for now)
-  const TO_EMAIL = "sergioj@solidgeardesigns.com";
+  const TO_EMAIL = "sergio@solidgeardesigns.com";
 
   const [reason, setReason] = useState("GD&T / Tolerance Review");
   const [name, setName] = useState("");
@@ -90,7 +90,7 @@ export default function Contact() {
 
               <div className="mt-7 pt-6 border-t border-white/10">
                 <p className="text-white/90 text-sm font-medium">
-                  Direct email: sergioj@solidgeardesigns.com
+                  Direct email: sergio@solidgeardesigns.com
                 </p>
                 <p className="mt-2 text-xs text-white/60">
                   For complex or sensitive programs, email is always acceptable.

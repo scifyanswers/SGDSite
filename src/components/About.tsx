@@ -4,9 +4,9 @@ export default function About() {
   const baseUrl = import.meta.env.BASE_URL;
 
   const highlights = [
-    "20+ years hands-on manufacturing experience",
-    "Deep CAD, GD&T, high-mix expertise",
-    "Senior engineering leadership without hiring full-time"
+    "Senior manufacturing engineering leadership",
+    "Deep experience with GD&T, CAD, and DFM",
+    "Proven impact on quality, cost, and launch performance"
   ];
 
   return (
@@ -14,7 +14,7 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-charcoal mb-4">
-            Why Work With Solid Gear Designs
+            About Solid Gear Designs
           </h2>
         </div>
 
@@ -28,14 +28,14 @@ export default function About() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <h3 className="text-2xl font-bold text-charcoal mb-6">
+            <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              Solid Gear Designs provides senior manufacturing engineering support to organizations that lack internal bandwidth but require experienced judgment.
+            </p>
+            <h3 className="text-2xl font-bold text-charcoal mb-4">
               Sergio Jorge — Founder & Senior Manufacturing Engineer
             </h3>
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
-              Sergio Jorge brings over two decades of hands-on manufacturing engineering experience to high-mix, low-volume manufacturers who need senior-level technical expertise without the commitment of a full-time hire.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed mb-8">
-              Specializing in GD&T, CAD design, and process optimization, Sergio helps engineering-constrained teams eliminate scrap, resolve tolerance failures, and accelerate product launches through systematic root-cause analysis and proven manufacturing best practices.
+              Sergio Jorge is a senior manufacturing engineer with over 20 years of hands-on experience supporting high-mix, low-volume manufacturing environments. His work focuses on resolving tolerance ambiguity, improving manufacturability, and stabilizing production through practical, engineering-driven solutions.
             </p>
             <div className="space-y-4">
               {highlights.map((highlight, index) => (
