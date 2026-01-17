@@ -83,7 +83,7 @@ export default function Contact() {
         records: [
           {
             fields: {
-              "Primary Reason": reason,
+              "Primary reason for reaching out": reason,
               "Name": fullName,
               "Company": company,
               "Work Email": email,
