@@ -44,10 +44,10 @@ export default function Contact() {
         {/* Header */}
         <div className="max-w-3xl">
           <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-            Book a Call
+            Let's Confirm Fit Before We Engage
           </h2>
           <p className="mt-3 text-lg text-white/75">
-            Send a short intake and we’ll reply with the best next step (call link or clarifying questions).
+            This intake helps us understand your technical challenge and determine whether we're the right engineering partner before scheduling time.
           </p>
         </div>
 
@@ -80,26 +80,22 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <Shield size={18} className="text-[#BF9F5A]" />
-                  <span>Confidentiality respected. NDAs welcome.</span>
+                  <span>Confidentiality respected. NDAs welcome</span>
                 </div>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <Mail size={18} className="text-[#BF9F5A]" />
-                  <span className="break-all">{TO_EMAIL}</span>
+                  <span>Engagements structured around measurable manufacturing outcomes</span>
                 </div>
               </div>
 
-              <a
-                href={mailtoHref}
-                className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#BF9F5A] px-6 py-3 font-bold text-[#0F1B27]
-                           shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)] hover:brightness-105 transition"
-              >
-                <Mail size={18} />
-                Email to Book
-              </a>
-
-              <p className="mt-3 text-xs text-white/55">
-                This opens your email app with a pre-filled intake. You can edit before sending.
-              </p>
+              <div className="mt-7 pt-6 border-t border-white/10">
+                <p className="text-white/90 text-sm font-medium">
+                  Direct email: sergio@solidgeardesigns.com
+                </p>
+                <p className="mt-2 text-xs text-white/60">
+                  For complex or sensitive programs, email is always acceptable.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -109,10 +105,10 @@ export default function Contact() {
               <div className="flex items-start justify-between gap-6">
                 <div>
                   <h3 className="text-xl font-bold text-[#0F1B27]">
-                    Quick Intake
+                    Technical Intake
                   </h3>
                   <p className="mt-1 text-sm text-[#1A1A1A]/70">
-                    The more specific you are, the faster we can confirm fit.
+                    Please be specific. Clear information allows us to assess fit and next steps quickly.
                   </p>
                 </div>
               </div>
@@ -120,7 +116,7 @@ export default function Contact() {
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Reason for booking
+                    Primary reason for reaching out
                   </label>
                   <div className="relative mt-2">
                     <select
@@ -130,11 +126,12 @@ export default function Contact() {
                                  focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
                     >
                       <option>GD&T / Tolerance Review</option>
-                      <option>DFM + Manufacturing Drawing Support</option>
-                      <option>Scrap / Rework Root Cause</option>
-                      <option>Supplier Quality / Defect Reduction</option>
-                      <option>Inspection / Gauge Strategy</option>
-                      <option>Other</option>
+                      <option>Design for Manufacturability (DFM)</option>
+                      <option>Scrap or Rework Reduction</option>
+                      <option>Supplier Quality or Disputes</option>
+                      <option>Drawing or CAD Corrections</option>
+                      <option>New Product or Process Launch Support</option>
+                      <option>Not sure — need engineering guidance</option>
                     </select>
                     <ChevronDown
                       className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#0F1B27]/50"
@@ -145,14 +142,14 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Name
+                    Your name
                   </label>
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    placeholder="Your name"
+                    placeholder="Full name"
                   />
                 </div>
 
@@ -171,7 +168,7 @@ export default function Contact() {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Email
+                    Work email
                   </label>
                   <input
                     type="email"
@@ -185,7 +182,7 @@ export default function Contact() {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-[#0F1B27]">
-                    What’s the problem you want solved?
+                    Describe the technical problem you need resolved
                   </label>
                   <textarea
                     value={message}
@@ -193,36 +190,23 @@ export default function Contact() {
                     rows={5}
                     className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    placeholder="Example: Tolerance stack is causing scrap at assembly. Supplier pushing back on true position callouts. Need DFM + drawing update."
+                    placeholder="Example:&#10;Tolerance stack-up causing scrap at assembly. Supplier pushing back on true position callouts. Need drawing updates and DFM guidance to stabilize production."
                   />
-                  <p className="mt-2 text-xs text-[#1A1A1A]/55">
-                    We typically respond within <span className="font-semibold">24 business hours</span>.
-                  </p>
                 </div>
               </div>
 
-              {/* Primary action: email (no fake submit) */}
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8">
                 <a
                   href={mailtoHref}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#0F1B27] px-6 py-3 font-semibold text-white
-                             hover:brightness-105 transition"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#BF9F5A] px-6 py-4 font-bold text-[#0F1B27]
+                             shadow-lg hover:brightness-105 transition"
                 >
-                  <Mail size={18} />
-                  Send Intake via Email
+                  Submit Technical Intake
                 </a>
-                <a
-                  href={`mailto:${TO_EMAIL}`}
-                  className="inline-flex items-center justify-center rounded-xl border border-black/10 px-6 py-3 font-semibold text-[#0F1B27]
-                             hover:bg-black/5 transition"
-                >
-                  Or email directly
-                </a>
+                <p className="mt-3 text-center text-xs text-[#1A1A1A]/50">
+                  Opens your email with pre-filled details. Review and send when ready.
+                </p>
               </div>
-
-              <p className="mt-4 text-xs text-[#1A1A1A]/55">
-                By reaching out, you agree we may use your message to respond. We do not sell your information.
-              </p>
             </div>
           </div>
         </div>
