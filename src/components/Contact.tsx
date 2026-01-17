@@ -1,7 +1,37 @@
+import { useState, FormEvent } from "react";
 import { Mail, Clock, Shield, ChevronDown } from "lucide-react";
 
 export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("https://formsubmit.co/sergioj@solidgeardesigns.com", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        form.reset();
+      }
+    } catch (error) {
+      alert("There was an error submitting the form. Please email sergioj@solidgeardesigns.com directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section id="contact" className="bg-[#0F1B27] py-20">
@@ -78,11 +108,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <form
-                action="mailto:sergioj@solidgeardesigns.com?subject=New%20Technical%20Intake%20%E2%80%94%20Solid%20Gear%20Designs"
-                method="POST"
-                encType="text/plain"
-              >
+              <form onSubmit={handleSubmit}>
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-[#0F1B27]">
@@ -162,19 +188,27 @@ export default function Contact() {
                 </div>
 
                 <div className="mt-8">
-                  <button
-                    type="submit"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#BF9F5A] px-6 py-4 font-bold text-[#0F1B27]
-                               shadow-lg hover:brightness-105 transition"
-                  >
-                    Submit Technical Intake
-                  </button>
-                  <p className="mt-3 text-center text-xs text-[#1A1A1A]/50">
-                    This does not obligate you to an engagement.
-                  </p>
-                  <p className="mt-2 text-center text-xs text-[#1A1A1A]/50">
-                    If your email client does not open, please email sergioj@solidgeardesigns.com directly.
-                  </p>
+                  {isSubmitted ? (
+                    <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center">
+                      <p className="text-green-800 font-semibold">
+                        Thank you. Your technical intake has been received. We typically respond within 24 business hours.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#BF9F5A] px-6 py-4 font-bold text-[#0F1B27]
+                                   shadow-lg hover:brightness-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSubmitting ? "Submitting..." : "Submit Technical Intake"}
+                      </button>
+                      <p className="mt-3 text-center text-xs text-[#1A1A1A]/50">
+                        This does not obligate you to an engagement.
+                      </p>
+                    </>
+                  )}
                 </div>
               </form>
             </div>
