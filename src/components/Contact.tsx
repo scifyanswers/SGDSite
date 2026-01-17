@@ -1,10 +1,12 @@
 import { useState, FormEvent } from "react";
 import { Mail, Clock, Shield, ChevronDown } from "lucide-react";
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const AIRTABLE_ENDPOINT_FALLBACK = "https://api.airtable.com/v0/appoZcE3LSbmki0aE/Table%201";
 
 export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
+  const { ref, isVisible } = useScrollAnimation(0.1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -128,7 +130,13 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="bg-[#0F1B27] py-20">
+    <section
+      id="contact"
+      ref={ref as React.RefObject<HTMLElement>}
+      className={`bg-[#0F1B27] py-20 transition-all duration-1000 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl">

@@ -1,6 +1,9 @@
 import { AlertCircle, Clock, FileX, Users } from 'lucide-react';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export default function PainPoints() {
+  const { ref, isVisible } = useScrollAnimation(0.1);
+
   const challenges = [
     {
       icon: AlertCircle,
@@ -21,7 +24,12 @@ export default function PainPoints() {
   ];
 
   return (
-    <section className="py-20 bg-light-grey">
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className={`py-20 bg-light-grey transition-all duration-1000 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-charcoal mb-4">
