@@ -91,7 +91,7 @@ export default function Privacy() {
               If you have any questions about this Privacy Policy or wish to exercise your privacy rights, please contact us at:
             </p>
             <p className="leading-relaxed">
-              <strong>Email:</strong> sergio@solidgeardesigns.com
+              <strong>Email:</strong> sergioj@solidgeardesigns.com
             </p>
           </section>
 
