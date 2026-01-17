@@ -1,4 +1,14 @@
+import { useEffect } from 'react';
+
 export default function Privacy() {
+  useEffect(() => {
+    document.title = 'Privacy Policy | Solid Gear Designs';
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Privacy policy for Solid Gear Designs. Learn how we collect, use, and protect your personal information when you use our manufacturing engineering services.');
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 lg:px-8 py-20">

@@ -1,4 +1,14 @@
+import { useEffect } from 'react';
+
 export default function Terms() {
+  useEffect(() => {
+    document.title = 'Terms of Use | Solid Gear Designs';
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Terms of use for Solid Gear Designs. Review our website terms, service agreements, and legal information for our manufacturing engineering services.');
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 lg:px-8 py-20">
