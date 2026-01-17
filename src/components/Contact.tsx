@@ -13,20 +13,36 @@ export default function Contact() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    const data = {
+      reason: formData.get("Primary reason for reaching out") as string,
+      name: formData.get("Name") as string,
+      company: formData.get("Company") as string,
+      email: formData.get("Work email") as string,
+      description: formData.get("Technical problem description") as string,
+    };
+
     try {
-      const response = await fetch("https://formsubmit.co/sergioj@solidgeardesigns.com", {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-contact`;
+
+      const response = await fetch(apiUrl, {
         method: "POST",
-        body: formData,
         headers: {
-          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
+        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setIsSubmitted(true);
         form.reset();
+      } else {
+        throw new Error(result.error || "Failed to submit form");
       }
     } catch (error) {
+      console.error("Form submission error:", error);
       alert("There was an error submitting the form. Please email sergioj@solidgeardesigns.com directly.");
     } finally {
       setIsSubmitting(false);
