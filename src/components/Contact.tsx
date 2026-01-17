@@ -87,8 +87,6 @@ export default function Contact() {
               "Company": company,
               "Work email": email,
               "Describe the technical problem you need resolved": description,
-              "Page URL": window.location.href,
-              "Submitted At": new Date().toISOString(),
             },
           },
         ],
