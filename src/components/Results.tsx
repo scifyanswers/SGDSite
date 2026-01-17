@@ -43,17 +43,15 @@ export default function Results() {
             return (
               <div
                 key={index}
-                className="group bg-white bg-opacity-10 backdrop-blur-sm p-8 rounded-lg text-center border border-copper border-opacity-30
-                           cursor-pointer transition-all duration-300
-                           hover:bg-opacity-15 hover:border-opacity-60 hover:shadow-2xl hover:shadow-copper/20 hover:-translate-y-2"
+                className="bg-white bg-opacity-10 backdrop-blur-sm p-8 rounded-lg text-center border border-copper border-opacity-30"
               >
                 <div className="flex justify-center mb-4">
-                  <Icon className="w-12 h-12 text-copper transition-all duration-300 group-hover:scale-110 group-hover:rotate-6" />
+                  <Icon className="w-12 h-12 text-copper" />
                 </div>
-                <div className="text-4xl md:text-5xl font-bold text-copper mb-2 transition-all duration-300 group-hover:scale-105">
+                <div className="text-4xl md:text-5xl font-bold text-copper mb-2">
                   {metric.stat}
                 </div>
-                <div className="text-lg text-white transition-all duration-300 group-hover:text-white/90">
+                <div className="text-lg text-white">
                   {metric.label}
                 </div>
               </div>
