@@ -104,7 +104,7 @@ export default function Terms() {
               If you have any questions about these Terms of Use, please contact us at:
             </p>
             <p className="leading-relaxed">
-              <strong>Email:</strong> sergio@solidgeardesigns.com
+              <strong>Email:</strong> sergioj@solidgeardesigns.com
             </p>
           </section>
         </div>
