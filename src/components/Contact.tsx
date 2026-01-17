@@ -1,42 +1,7 @@
-import { useMemo, useState } from "react";
 import { Mail, Clock, Shield, ChevronDown } from "lucide-react";
 
 export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
-
-  // ✅ Your booking method (email for now)
-  const TO_EMAIL = "sergioj@solidgeardesigns.com";
-
-  const [reason, setReason] = useState("GD&T / Tolerance Review");
-  const [name, setName] = useState("");
-  const [company, setCompany] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-
-  const mailtoHref = useMemo(() => {
-    const subject = `Solid Gear Designs — ${reason}`;
-    const bodyLines = [
-      `Reason: ${reason}`,
-      name ? `Name: ${name}` : `Name:`,
-      company ? `Company: ${company}` : `Company:`,
-      email ? `Email: ${email}` : `Email:`,
-      ``,
-      `Project / Pain:`,
-      message || ``,
-      ``,
-      `Helpful details (if available):`,
-      `• Part/material/process`,
-      `• Tightest tolerance(s) and feature(s) at risk`,
-      `• Current scrap/rework symptom`,
-      `• Supplier or inspection constraints`,
-    ];
-
-    const body = bodyLines.join("\n");
-
-    return `mailto:${TO_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-      body
-    )}`;
-  }, [TO_EMAIL, reason, name, company, email, message]);
 
   return (
     <section id="contact" className="bg-[#0F1B27] py-20">
@@ -113,100 +78,105 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Primary reason for reaching out
-                  </label>
-                  <div className="relative mt-2">
-                    <select
-                      value={reason}
-                      onChange={(e) => setReason(e.target.value)}
-                      className="w-full appearance-none rounded-xl border border-black/10 bg-white px-4 py-3 pr-10 text-[#0F1B27]
+              <form
+                action="mailto:sergioj@solidgeardesigns.com?subject=New%20Technical%20Intake%20%E2%80%94%20Solid%20Gear%20Designs"
+                method="POST"
+                encType="text/plain"
+              >
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-[#0F1B27]">
+                      Primary reason for reaching out
+                    </label>
+                    <div className="relative mt-2">
+                      <select
+                        name="Primary reason for reaching out"
+                        defaultValue="GD&T / Tolerance Review"
+                        className="w-full appearance-none rounded-xl border border-black/10 bg-white px-4 py-3 pr-10 text-[#0F1B27]
+                                   focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
+                      >
+                        <option>GD&T / Tolerance Review</option>
+                        <option>Design for Manufacturability (DFM)</option>
+                        <option>Scrap or Rework Reduction</option>
+                        <option>Supplier Quality or Disputes</option>
+                        <option>Drawing or CAD Corrections</option>
+                        <option>New Product or Process Launch Support</option>
+                        <option>Not sure — need engineering guidance</option>
+                      </select>
+                      <ChevronDown
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#0F1B27]/50"
+                        size={18}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-[#0F1B27]">
+                      Your name
+                    </label>
+                    <input
+                      name="Name"
+                      className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                  focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    >
-                      <option>GD&T / Tolerance Review</option>
-                      <option>Design for Manufacturability (DFM)</option>
-                      <option>Scrap or Rework Reduction</option>
-                      <option>Supplier Quality or Disputes</option>
-                      <option>Drawing or CAD Corrections</option>
-                      <option>New Product or Process Launch Support</option>
-                      <option>Not sure — need engineering guidance</option>
-                    </select>
-                    <ChevronDown
-                      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#0F1B27]/50"
-                      size={18}
+                      placeholder="Full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-[#0F1B27]">
+                      Company
+                    </label>
+                    <input
+                      name="Company"
+                      className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
+                                 focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
+                      placeholder="Company (optional)"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-[#0F1B27]">
+                      Work email
+                    </label>
+                    <input
+                      type="email"
+                      name="Work email"
+                      className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
+                                 focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
+                      placeholder="you@company.com"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-[#0F1B27]">
+                      Describe the technical problem you need resolved
+                    </label>
+                    <textarea
+                      name="Technical problem description"
+                      rows={5}
+                      className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
+                                 focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
+                      placeholder="Example:&#10;Tolerance stack-up causing scrap at assembly. Supplier pushing back on true position callouts. Need drawing updates and DFM guidance to stabilize production."
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Your name
-                  </label>
-                  <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
-                               focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    placeholder="Full name"
-                  />
+                <div className="mt-8">
+                  <button
+                    type="submit"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#BF9F5A] px-6 py-4 font-bold text-[#0F1B27]
+                               shadow-lg hover:brightness-105 transition"
+                  >
+                    Submit Technical Intake
+                  </button>
+                  <p className="mt-3 text-center text-xs text-[#1A1A1A]/50">
+                    This does not obligate you to an engagement.
+                  </p>
+                  <p className="mt-2 text-center text-xs text-[#1A1A1A]/50">
+                    If your email client does not open, please email sergioj@solidgeardesigns.com directly.
+                  </p>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Company
-                  </label>
-                  <input
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
-                               focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    placeholder="Company (optional)"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Work email
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
-                               focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    placeholder="you@company.com"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-[#0F1B27]">
-                    Describe the technical problem you need resolved
-                  </label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    rows={5}
-                    className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
-                               focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
-                    placeholder="Example:&#10;Tolerance stack-up causing scrap at assembly. Supplier pushing back on true position callouts. Need drawing updates and DFM guidance to stabilize production."
-                  />
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <a
-                  href={mailtoHref}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#BF9F5A] px-6 py-4 font-bold text-[#0F1B27]
-                             shadow-lg hover:brightness-105 transition"
-                >
-                  Submit Technical Intake
-                </a>
-                <p className="mt-3 text-center text-xs text-[#1A1A1A]/50">
-                  Opens your email with pre-filled details. Review and send when ready.
-                </p>
-              </div>
+              </form>
             </div>
           </div>
         </div>
