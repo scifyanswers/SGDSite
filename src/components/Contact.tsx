@@ -90,7 +90,7 @@ export default function Contact() {
 
               <div className="mt-7 pt-6 border-t border-white/10">
                 <p className="text-white/90 text-sm font-medium">
-                  Direct email: sergio@solidgeardesigns.com
+                  Direct email: sergioj@solidgeardesigns.com
                 </p>
                 <p className="mt-2 text-xs text-white/60">
                   For complex or sensitive programs, email is always acceptable.
