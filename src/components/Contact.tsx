@@ -1,49 +1,130 @@
 import { useState, FormEvent } from "react";
 import { Mail, Clock, Shield, ChevronDown } from "lucide-react";
 
+const AIRTABLE_ENDPOINT_FALLBACK = "https://api.airtable.com/v0/appoZcE3LSbmki0aE/Table%201";
+const PERSONAL_EMAIL_DOMAINS = [
+  "gmail.com",
+  "yahoo.com",
+  "hotmail.com",
+  "outlook.com",
+  "icloud.com",
+  "aol.com",
+  "protonmail.com",
+  "proton.me",
+];
+
 export default function Contact() {
   const baseUrl = import.meta.env.BASE_URL;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage(null);
 
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const data = {
-      reason: formData.get("Primary reason for reaching out") as string,
-      name: formData.get("Name") as string,
-      company: formData.get("Company") as string,
-      email: formData.get("Work email") as string,
-      description: formData.get("Technical problem description") as string,
-    };
+    const reason = (formData.get("reason") as string || "").trim();
+    const fullName = (formData.get("fullName") as string || "").trim();
+    const company = (formData.get("company") as string || "").trim();
+    const email = (formData.get("email") as string || "").trim();
+    const description = (formData.get("description") as string || "").trim();
+
+    if (!reason) {
+      setErrorMessage("Please select a reason for reaching out.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!fullName || fullName.length < 2) {
+      setErrorMessage("Please enter your full name (at least 2 characters).");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!email) {
+      setErrorMessage("Please enter your work email address.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const emailDomain = email.split("@")[1]?.toLowerCase();
+    if (emailDomain && PERSONAL_EMAIL_DOMAINS.includes(emailDomain)) {
+      setErrorMessage("Please use a company email for this intake.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!description || description.length < 20) {
+      setErrorMessage("Please provide a detailed description (at least 20 characters).");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-contact`;
+      const airtableEndpoint = import.meta.env.VITE_AIRTABLE_ENDPOINT || AIRTABLE_ENDPOINT_FALLBACK;
+      const airtableToken = import.meta.env.VITE_AIRTABLE_TOKEN;
 
-      const response = await fetch(apiUrl, {
+      if (!airtableToken) {
+        throw new Error("Airtable configuration is missing. Please contact support.");
+      }
+
+      const payload = {
+        records: [
+          {
+            fields: {
+              "Primary Reason": reason,
+              "Name": fullName,
+              "Company": company,
+              "Work Email": email,
+              "Technical Problem": description,
+              "Page URL": window.location.href,
+              "Submitted At": new Date().toISOString(),
+            },
+          },
+        ],
+      };
+
+      const response = await fetch(airtableEndpoint, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${airtableToken}`,
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          "Accept": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const responseText = await response.text();
+      let result;
 
-      if (response.ok && result.success) {
-        setIsSubmitted(true);
-        form.reset();
-      } else {
-        throw new Error(result.error || "Failed to submit form");
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        result = { error: { message: responseText } };
       }
+
+      if (!response.ok) {
+        const errorMsg = result?.error?.message || result?.error || "Failed to submit form";
+        throw new Error(errorMsg);
+      }
+
+      setIsSubmitted(true);
+      form.reset();
     } catch (error) {
       console.error("Form submission error:", error);
-      alert("There was an error submitting the form. Please email sergioj@solidgeardesigns.com directly.");
+      const errorMsg = error instanceof Error ? error.message : "An error occurred";
+      setErrorMessage(`Unable to submit form: ${errorMsg}. Please email sergioj@solidgeardesigns.com directly.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -132,7 +213,7 @@ export default function Contact() {
                     </label>
                     <div className="relative mt-2">
                       <select
-                        name="Primary reason for reaching out"
+                        name="reason"
                         defaultValue="GD&T / Tolerance Review"
                         className="w-full appearance-none rounded-xl border border-black/10 bg-white px-4 py-3 pr-10 text-[#0F1B27]
                                    focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
@@ -157,7 +238,7 @@ export default function Contact() {
                       Your name
                     </label>
                     <input
-                      name="Name"
+                      name="fullName"
                       className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                  focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
                       placeholder="Full name"
@@ -169,7 +250,7 @@ export default function Contact() {
                       Company
                     </label>
                     <input
-                      name="Company"
+                      name="company"
                       className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                  focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
                       placeholder="Company (optional)"
@@ -182,7 +263,7 @@ export default function Contact() {
                     </label>
                     <input
                       type="email"
-                      name="Work email"
+                      name="email"
                       className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                  focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
                       placeholder="you@company.com"
@@ -194,7 +275,7 @@ export default function Contact() {
                       Describe the technical problem you need resolved
                     </label>
                     <textarea
-                      name="Technical problem description"
+                      name="description"
                       rows={5}
                       className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[#0F1B27]
                                  focus:outline-none focus:ring-2 focus:ring-[#BF9F5A]/40"
@@ -204,10 +285,18 @@ export default function Contact() {
                 </div>
 
                 <div className="mt-8">
+                  {errorMessage && (
+                    <div className="rounded-xl bg-red-50 border border-red-200 p-6 mb-4">
+                      <p className="text-red-800 font-semibold text-sm">
+                        {errorMessage}
+                      </p>
+                    </div>
+                  )}
+
                   {isSubmitted ? (
                     <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center">
                       <p className="text-green-800 font-semibold">
-                        Thank you. Your technical intake has been received. We typically respond within 24 business hours.
+                        Thank you for completing the technical intake. We typically reply within 24–48 business hours.
                       </p>
                     </div>
                   ) : (
