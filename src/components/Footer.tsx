@@ -20,7 +20,7 @@ export default function Footer() {
             </a>
           </div>
           <p className="text-gray-500 text-sm mb-2">
-            © 2026 Solid Gear Designs. All rights reserved.
+            © 2023 Solid Gear Designs. All rights reserved.
           </p>
           <p className="text-gray-500 text-sm">
             Serving manufacturing clients across the United States.
