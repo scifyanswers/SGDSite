@@ -83,10 +83,10 @@ export default function Contact() {
           {
             fields: {
               "Primary reason for reaching out": reason,
-              "Name": fullName,
+              "Your name": fullName,
               "Company": company,
-              "Work Email": email,
-              "Technical Problem": description,
+              "Work email": email,
+              "Describe the technical problem you need resolved": description,
               "Page URL": window.location.href,
               "Submitted At": new Date().toISOString(),
             },
