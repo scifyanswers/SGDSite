@@ -1,9 +1,6 @@
 import { Quote } from 'lucide-react';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export default function Testimonials() {
-  const { ref, isVisible } = useScrollAnimation(0.1);
-
   const testimonials = [
     {
       text: "Sergio helped develop my product's design and manufacturing drawings, ensuring all features and tolerances were met by my manufacturer. Real professional. Honest conversations. I love his work.",
@@ -23,12 +20,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section
-      ref={ref as React.RefObject<HTMLElement>}
-      className={`py-20 bg-light-grey transition-all duration-1000 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      }`}
-    >
+    <section className="py-20 bg-light-grey">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-charcoal">

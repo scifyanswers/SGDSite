@@ -1,9 +1,7 @@
 import { Ruler, FileText, TrendingDown, Rocket } from 'lucide-react';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export default function Solutions() {
   const baseUrl = import.meta.env.BASE_URL;
-  const { ref, isVisible } = useScrollAnimation(0.1);
 
   const services = [
     {
@@ -29,13 +27,7 @@ export default function Solutions() {
   ];
 
   return (
-    <section
-      id="services"
-      ref={ref as React.RefObject<HTMLElement>}
-      className={`py-20 bg-white transition-all duration-1000 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      }`}
-    >
+    <section id="services" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-4">
           <h2 className="text-3xl md:text-4xl font-bold text-charcoal mb-4">

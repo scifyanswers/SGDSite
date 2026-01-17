@@ -1,9 +1,6 @@
 import { TrendingDown, Clock, CheckCircle } from 'lucide-react';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export default function Results() {
-  const { ref, isVisible } = useScrollAnimation(0.1);
-
   const metrics = [
     {
       icon: TrendingDown,
@@ -23,13 +20,7 @@ export default function Results() {
   ];
 
   return (
-    <section
-      id="results"
-      ref={ref as React.RefObject<HTMLElement>}
-      className={`py-20 bg-navy transition-all duration-1000 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      }`}
-    >
+    <section id="results" className="py-20 bg-navy">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
