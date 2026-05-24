@@ -21,7 +21,7 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="order-2 lg:order-1">
             <img
-              src={`${baseUrl}images/sergio-jorge.jpg`}
+              src={`${baseUrl}images/sergio-jorge-v2.jpg`}
               alt="Sergio Jorge, Founder & Senior Manufacturing Engineer"
               className="rounded-lg shadow-xl w-full"
             />
