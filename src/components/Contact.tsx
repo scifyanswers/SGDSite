@@ -169,7 +169,7 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <Shield size={18} className="text-[#BF9F5A]" />
-                  <span>Confidentiality respected. NDAs welcome</span>
+                  <span>Confidentiality respected. NDAs welcomed</span>
                 </div>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <Mail size={18} className="text-[#BF9F5A]" />
