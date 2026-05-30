@@ -5,7 +5,7 @@ Premium B2B consulting website for Solid Gear Designs, a senior manufacturing en
 ## Project Overview
 
 **Company:** Solid Gear Designs
-**Founder:** Sergio Jorge — Senior Manufacturing Engineer
+**Founder:** Sergio Jorge: Senior Manufacturing Engineer
 **Target Audience:** High-mix, low-volume manufacturers
 **Site Philosophy:** Premium, calm, confident — no sales tactics
 
