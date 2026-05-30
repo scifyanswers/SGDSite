@@ -155,7 +155,7 @@ export default function Contact() {
                     Solid Gear Designs
                   </div>
                   <div className="text-white/70 text-sm">
-                    Sergio Jorge — Founder & Senior Manufacturing Engineer
+                    Sergio Jorge: Founder & Senior Manufacturing Engineer
                   </div>
                 </div>
               </div>
