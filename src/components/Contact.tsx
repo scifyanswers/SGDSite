@@ -155,7 +155,7 @@ export default function Contact() {
                     Solid Gear Designs
                   </div>
                   <div className="text-white/70 text-sm">
-                    Sergio Jorge - Founder & Senior Manufacturing Engineer
+                    Sergio Jorge — Founder & Senior Manufacturing Engineer
                   </div>
                 </div>
               </div>
@@ -169,7 +169,7 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <Shield size={18} className="text-[#BF9F5A]" />
-                  <span>Confidentiality respected. NDAs welcomed</span>
+                  <span>Confidentiality respected. NDAs welcome</span>
                 </div>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <Mail size={18} className="text-[#BF9F5A]" />

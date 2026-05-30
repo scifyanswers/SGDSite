@@ -21,7 +21,7 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="order-2 lg:order-1">
             <img
-              src="/images/sergio-jorge-v3.jpg"
+              src={`${baseUrl}images/sergio-jorge.jpg`}
               alt="Sergio Jorge, Founder & Senior Manufacturing Engineer"
               className="rounded-lg shadow-xl w-full"
             />
@@ -32,7 +32,7 @@ export default function About() {
               Solid Gear Designs provides senior manufacturing engineering support to organizations that lack internal bandwidth but require experienced judgment.
             </p>
             <h3 className="text-2xl font-bold text-charcoal mb-4">
-              Sergio Jorge - Founder & Senior Manufacturing Engineer
+              Sergio Jorge — Founder & Senior Manufacturing Engineer
             </h3>
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
               Sergio Jorge is a senior manufacturing engineer with over 20 years of hands-on experience supporting high-mix, low-volume manufacturing environments. His work focuses on resolving tolerance ambiguity, improving manufacturability, and stabilizing production through practical, engineering-driven solutions.

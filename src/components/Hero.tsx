@@ -23,7 +23,7 @@ export default function Hero() {
           Engineering Expertise for High-Mix Manufacturers
         </h1>
         <p className="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed">
-          Senior manufacturing engineering support to reduce scrap, stabilize production, and accelerate launches - without adding headcount.
+          Senior manufacturing engineering support to reduce scrap, stabilize production, and accelerate launches—without adding headcount.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

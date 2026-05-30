@@ -17,7 +17,7 @@ export default function Solutions() {
     {
       icon: TrendingDown,
       title: "Scrap & Rework Reduction",
-      description: "Root-cause analysis and corrective action at the engineering level, not band-aids."
+      description: "Root-cause analysis and corrective action at the engineering level—not band-aids."
     },
     {
       icon: Rocket,
