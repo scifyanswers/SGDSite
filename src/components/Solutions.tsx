@@ -1,8 +1,6 @@
 import { Ruler, FileText, TrendingDown, Rocket } from 'lucide-react';
 
 export default function Solutions() {
-  const baseUrl = import.meta.env.BASE_URL;
-
   const services = [
     {
       icon: Ruler,
