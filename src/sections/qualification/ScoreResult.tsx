@@ -34,8 +34,8 @@ const tierConfig: Record<FitTier, { color: string; bg: string; border: string; b
 };
 
 const ctaHref: Record<FitTier, string> = {
-  strong: "#contact",
-  likely: "#contact",
+  strong: "/#contact",
+  likely: "/#contact",
   partial: "mailto:sergioj@solidgeardesigns.com",
   unclear: "mailto:sergioj@solidgeardesigns.com",
 };
