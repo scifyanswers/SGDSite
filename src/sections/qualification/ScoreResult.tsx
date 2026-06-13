@@ -1,48 +1,38 @@
 import { motion } from "framer-motion";
-import { ScoreResult as ScoreResultType, FitTier } from "./scoring";
+import { LeadTier, tierConfig } from "./scoring";
 
 interface ScoreResultProps {
-  result: ScoreResultType;
+  tier: LeadTier;
+  totalPoints: number;
   onRetake: () => void;
 }
 
-const tierConfig: Record<FitTier, { color: string; bg: string; border: string; badge: string }> = {
-  strong: {
-    color: "#4ade80",
-    bg: "rgba(74,222,128,0.08)",
-    border: "rgba(74,222,128,0.25)",
+const tierVisuals: Record<LeadTier, { bg: string; border: string; badge: string }> = {
+  HIGH: {
+    bg: "rgba(45,106,79,0.12)",
+    border: "rgba(45,106,79,0.4)",
     badge: "Strong Fit",
   },
-  likely: {
-    color: "#BF9F5A",
-    bg: "rgba(191,159,90,0.08)",
-    border: "rgba(191,159,90,0.3)",
-    badge: "Likely Fit",
+  STANDARD: {
+    bg: "rgba(146,64,14,0.12)",
+    border: "rgba(146,64,14,0.4)",
+    badge: "Possible Fit",
   },
-  partial: {
-    color: "#fb923c",
-    bg: "rgba(251,146,60,0.08)",
-    border: "rgba(251,146,60,0.25)",
-    badge: "Partial Fit",
+  LOW: {
+    bg: "rgba(107,114,128,0.12)",
+    border: "rgba(107,114,128,0.3)",
+    badge: "Not Yet",
   },
-  unclear: {
-    color: "rgba(255,255,255,0.5)",
-    bg: "rgba(255,255,255,0.04)",
-    border: "rgba(255,255,255,0.12)",
-    badge: "Unclear Fit",
+  DISQUALIFIED: {
+    bg: "rgba(127,29,29,0.12)",
+    border: "rgba(127,29,29,0.35)",
+    badge: "Not a Fit",
   },
 };
 
-const ctaHref: Record<FitTier, string> = {
-  strong: "/#contact",
-  likely: "/#contact",
-  partial: "mailto:sergioj@solidgeardesigns.com",
-  unclear: "mailto:sergioj@solidgeardesigns.com",
-};
-
-export default function ScoreResult({ result, onRetake }: ScoreResultProps) {
-  const cfg = tierConfig[result.tier];
-  const href = ctaHref[result.tier];
+export default function ScoreResult({ tier, totalPoints, onRetake }: ScoreResultProps) {
+  const cfg = tierConfig[tier];
+  const vis = tierVisuals[tier];
 
   return (
     <motion.div
@@ -50,50 +40,44 @@ export default function ScoreResult({ result, onRetake }: ScoreResultProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      {/* Score meter */}
+      {/* Tier indicator */}
       <div style={{ textAlign: "center", marginBottom: "28px" }}>
-        <div
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "6px",
-          }}
-        >
+        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
           <div
             style={{
-              width: "96px",
-              height: "96px",
+              width: "88px",
+              height: "88px",
               borderRadius: "50%",
               border: `3px solid ${cfg.color}`,
-              backgroundColor: cfg.bg,
+              backgroundColor: vis.bg,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
+              gap: "2px",
             }}
           >
-            <span style={{ fontSize: "1.75rem", fontWeight: 800, color: cfg.color, lineHeight: 1 }}>
-              {result.percentage}%
+            <span style={{ fontSize: "1.5rem", fontWeight: 800, color: cfg.color, lineHeight: 1 }}>
+              {totalPoints}
             </span>
-            <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-              fit score
+            <span style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              pts
             </span>
           </div>
           <span
             style={{
-              fontSize: "0.75rem",
+              fontSize: "0.7rem",
               fontWeight: 700,
               color: cfg.color,
               textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              padding: "3px 10px",
+              letterSpacing: "0.09em",
+              padding: "3px 12px",
               borderRadius: "9999px",
-              border: `1px solid ${cfg.border}`,
-              backgroundColor: cfg.bg,
+              border: `1px solid ${vis.border}`,
+              backgroundColor: vis.bg,
             }}
           >
-            {cfg.badge}
+            {vis.badge}
           </span>
         </div>
       </div>
@@ -101,42 +85,42 @@ export default function ScoreResult({ result, onRetake }: ScoreResultProps) {
       {/* Headline + body */}
       <div
         style={{
-          backgroundColor: cfg.bg,
-          border: `1px solid ${cfg.border}`,
+          backgroundColor: vis.bg,
+          border: `1px solid ${vis.border}`,
           borderRadius: "14px",
           padding: "20px 22px",
           marginBottom: "20px",
         }}
       >
-        <p style={{ fontSize: "1.125rem", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-          {result.headline}
+        <p style={{ fontSize: "1.0625rem", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
+          {cfg.headline}
         </p>
-        <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
-          {result.body}
+        <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.65 }}>
+          {cfg.body}
         </p>
       </div>
 
       {/* CTA */}
       <a
-        href={href}
+        href={cfg.cta_url}
         style={{
           display: "block",
           width: "100%",
           textAlign: "center",
           padding: "14px 24px",
           borderRadius: "12px",
-          backgroundColor: "#BF9F5A",
-          color: "#0F1B27",
+          backgroundColor: cfg.color,
+          color: "#fff",
           fontWeight: 700,
           fontSize: "0.9375rem",
           textDecoration: "none",
           marginBottom: "12px",
           transition: "filter 0.15s ease",
         }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.08)")}
+        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.12)")}
         onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1)")}
       >
-        {result.cta}
+        {cfg.cta_label}
       </a>
 
       <button

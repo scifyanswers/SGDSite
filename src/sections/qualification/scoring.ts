@@ -1,65 +1,42 @@
-import { questions } from "./questions";
+export type LeadTier = "HIGH" | "STANDARD" | "LOW" | "DISQUALIFIED";
 
-export type FitTier = "strong" | "likely" | "partial" | "unclear";
-
-export interface ScoreResult {
-  raw: number;
-  max: number;
-  percentage: number;
-  tier: FitTier;
-  headline: string;
-  body: string;
-  cta: string;
+export function scoreLead(totalPoints: number, hasDisqualifier: boolean): LeadTier {
+  if (hasDisqualifier) return "DISQUALIFIED";
+  if (totalPoints >= 45) return "HIGH";
+  if (totalPoints >= 30) return "STANDARD";
+  return "LOW";
 }
 
-const MAX_SCORE = questions.reduce((sum, q) => {
-  const best = Math.max(...q.options.map((o) => o.score));
-  return sum + best;
-}, 0);
-
-export function calculateScore(answers: Record<string, string>): ScoreResult {
-  let raw = 0;
-
-  for (const question of questions) {
-    const selectedId = answers[question.id];
-    if (selectedId) {
-      const option = question.options.find((o) => o.id === selectedId);
-      if (option) raw += option.score;
-    }
-  }
-
-  const percentage = Math.round((raw / MAX_SCORE) * 100);
-
-  let tier: FitTier;
-  let headline: string;
-  let body: string;
-  let cta: string;
-
-  if (percentage >= 80) {
-    tier = "strong";
-    headline = "Strong Fit — Let's Talk";
-    body =
-      "Your situation aligns closely with the work we do. You have an active, well-defined challenge and the context for hands-on engineering support to make a measurable difference quickly.";
-    cta = "Submit the Technical Intake";
-  } else if (percentage >= 60) {
-    tier = "likely";
-    headline = "Likely a Good Fit";
-    body =
-      "There's meaningful overlap between your challenge and our expertise. A brief intake conversation will help confirm scope and determine the right engagement structure.";
-    cta = "Complete the Intake Form";
-  } else if (percentage >= 40) {
-    tier = "partial";
-    headline = "Partial Fit — Worth a Conversation";
-    body =
-      "Some aspects of your situation align with our work, but we'd want to understand more before committing either side's time. Reach out directly and we'll be candid about fit.";
-    cta = "Send a Direct Email";
-  } else {
-    tier = "unclear";
-    headline = "Unclear Fit at This Stage";
-    body =
-      "Based on your responses, it's not immediately clear that we're the right match — but manufacturing challenges can be complex. If something resonated, reach out and explain your situation.";
-    cta = "Reach Out Directly";
-  }
-
-  return { raw, max: MAX_SCORE, percentage, tier, headline, body, cta };
-}
+export const tierConfig: Record<
+  LeadTier,
+  { headline: string; body: string; cta_label: string; cta_url: string; color: string }
+> = {
+  HIGH: {
+    headline: "You're a Strong Fit.",
+    body: "Your shop profile aligns closely with the First-Pass Precision System. You'll be directed to book a 45-minute discovery call — your answers will be shared with the advisor in advance.",
+    cta_label: "Book Your Discovery Call",
+    cta_url: "[PLACEHOLDER — insert Calendly or booking link]",
+    color: "#2D6A4F",
+  },
+  STANDARD: {
+    headline: "You May Be a Fit.",
+    body: "Your operational challenges align with what we address, but one or more areas may need clarification. Our advisor will review your answers and reach out within 1 business day.",
+    cta_label: "Submit for Review",
+    cta_url: "[PLACEHOLDER — insert CRM form submit endpoint]",
+    color: "#92400E",
+  },
+  LOW: {
+    headline: "Not the Right Time — Yet.",
+    body: "Your shop isn't quite at the stage where this program delivers its highest ROI. We've put together two free tools to help you get there: an FPY/RTY Calculator and a basic Setup Sheet Template.",
+    cta_label: "Download Free Resources",
+    cta_url: "[PLACEHOLDER — insert resource download link]",
+    color: "#6B7280",
+  },
+  DISQUALIFIED: {
+    headline: "This Program Isn't the Right Fit.",
+    body: "Based on your answers, the First-Pass Precision System isn't structured for your current situation. We're sharing a free resource below that may still be useful.",
+    cta_label: "Download Free Resource",
+    cta_url: "[PLACEHOLDER — insert resource download link]",
+    color: "#7F1D1D",
+  },
+};

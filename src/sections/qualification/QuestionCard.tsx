@@ -4,8 +4,8 @@ import OptionButton from "./OptionButton";
 
 interface QuestionCardProps {
   question: Question;
-  selectedOptionId: string | null;
-  onSelect: (optionId: string) => void;
+  selectedIndex: number | null;
+  onSelect: (index: number) => void;
   direction: number;
 }
 
@@ -15,7 +15,7 @@ const variants = {
   exit: (dir: number) => ({ x: dir > 0 ? -48 : 48, opacity: 0 }),
 };
 
-export default function QuestionCard({ question, selectedOptionId, onSelect, direction }: QuestionCardProps) {
+export default function QuestionCard({ question, selectedIndex, onSelect, direction }: QuestionCardProps) {
   return (
     <AnimatePresence mode="wait" custom={direction}>
       <motion.div
@@ -30,10 +30,10 @@ export default function QuestionCard({ question, selectedOptionId, onSelect, dir
         <div style={{ marginBottom: "8px" }}>
           <p
             style={{
-              fontSize: "1.25rem",
+              fontSize: "1.125rem",
               fontWeight: 700,
               color: "#fff",
-              lineHeight: 1.35,
+              lineHeight: 1.4,
               marginBottom: question.subtext ? "8px" : "24px",
             }}
           >
@@ -54,12 +54,12 @@ export default function QuestionCard({ question, selectedOptionId, onSelect, dir
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {question.options.map((option) => (
+          {question.options.map((option, index) => (
             <OptionButton
-              key={option.id}
+              key={index}
               label={option.label}
-              selected={selectedOptionId === option.id}
-              onClick={() => onSelect(option.id)}
+              selected={selectedIndex === index}
+              onClick={() => onSelect(index)}
             />
           ))}
         </div>

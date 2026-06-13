@@ -1,70 +1,79 @@
 export interface Option {
-  id: string;
   label: string;
-  score: number;
+  points: number;
+  disqualify: boolean;
 }
 
 export interface Question {
-  id: string;
+  id: number;
   text: string;
-  subtext?: string;
+  subtext: string | null;
   options: Option[];
 }
 
 export const questions: Question[] = [
   {
-    id: "manufacturer_type",
-    text: "What best describes your manufacturing environment?",
-    subtext: "This helps us understand the complexity of your production context.",
+    id: 1,
+    text: "What is the current headcount of your machine shop?",
+    subtext: null,
     options: [
-      { id: "hmlv", label: "High-mix, low-volume (custom or semi-custom parts)", score: 3 },
-      { id: "oem", label: "OEM with multiple product lines", score: 3 },
-      { id: "contract", label: "Contract manufacturer serving multiple customers", score: 2 },
-      { id: "startup", label: "Hardware startup or pre-production", score: 2 },
-      { id: "other", label: "Other / not sure", score: 1 },
+      { label: "Fewer than 10 employees", points: 0, disqualify: true },
+      { label: "10 to 75 employees", points: 10, disqualify: false },
+      { label: "76 to 150 employees", points: 7, disqualify: false },
+      { label: "More than 150 employees", points: 0, disqualify: true },
     ],
   },
   {
-    id: "primary_challenge",
-    text: "What is your most pressing engineering challenge right now?",
-    subtext: "Select the option that most closely matches your current situation.",
+    id: 2,
+    text: "What percentage of your monthly revenue comes from parts with tolerances of ±0.001\" or tighter, or difficult alloys?",
+    subtext: null,
     options: [
-      { id: "gdt", label: "GD&T or tolerance issues causing scrap / supplier disputes", score: 3 },
-      { id: "dfm", label: "Parts are difficult to manufacture or require constant rework", score: 3 },
-      { id: "launch", label: "New product or process launch that keeps slipping", score: 3 },
-      { id: "supplier", label: "Supplier quality problems with no clear root cause", score: 2 },
-      { id: "general", label: "General engineering backlog — no dedicated resource", score: 2 },
+      { label: "Less than 10%", points: 0, disqualify: true },
+      { label: "10% to 49%", points: 5, disqualify: false },
+      { label: "50% to 100%", points: 10, disqualify: false },
     ],
   },
   {
-    id: "urgency",
-    text: "How urgently do you need engineering support?",
+    id: 3,
+    text: "If your lead programmer or hero engineer were out for a month, what would happen to your ability to run critical jobs correctly on the first setup?",
+    subtext: null,
     options: [
-      { id: "now", label: "Immediately — active problem costing us money today", score: 3 },
-      { id: "soon", label: "Within 1–4 weeks — escalating issue", score: 3 },
-      { id: "quarter", label: "Within the next quarter — planning ahead", score: 2 },
-      { id: "exploring", label: "Just exploring options for now", score: 1 },
+      { label: "Nothing. Setups and inspection plans are fully documented.", points: 2, disqualify: false },
+      { label: "Minor delays, but other operators would eventually figure it out.", points: 5, disqualify: false },
+      { label: "Complete disruption. We would struggle to run critical jobs.", points: 10, disqualify: false },
     ],
   },
   {
-    id: "internal_bandwidth",
-    text: "How is your internal engineering capacity?",
-    subtext: "Be candid — this determines how hands-on we'd need to be.",
+    id: 4,
+    text: "What is your estimated average First-Pass Yield (FPY) on your most challenging or high-risk parts?",
+    subtext: "First-Pass Yield = parts accepted at final inspection without any rework or secondary operations.",
     options: [
-      { id: "none", label: "No internal manufacturing engineer on staff", score: 3 },
-      { id: "stretched", label: "1–2 engineers stretched thin across too many programs", score: 3 },
-      { id: "gaps", label: "Team exists but lacks specific expertise (GD&T, DFM, etc.)", score: 2 },
-      { id: "full", label: "Full engineering team — need overflow or specialty support", score: 1 },
+      { label: "Over 95% (Excellent)", points: 2, disqualify: false },
+      { label: "90% to 94% (Stable, but needs improvement)", points: 5, disqualify: false },
+      { label: "Under 90% (Experiencing regular scrap/rework)", points: 10, disqualify: false },
+      { label: "We do not actively track first-pass yield.", points: 10, disqualify: false },
     ],
   },
   {
-    id: "engagement_type",
-    text: "What type of engagement would work best for you?",
+    id: 5,
+    text: "Who on your leadership team is responsible for driving process standardization and executing weekly change initiatives on the floor?",
+    subtext: null,
     options: [
-      { id: "project", label: "Project-based — defined scope with a clear deliverable", score: 3 },
-      { id: "retainer", label: "Ongoing retainer — fractional engineering support", score: 3 },
-      { id: "advisory", label: "Technical advisory — periodic expert review", score: 2 },
-      { id: "unsure", label: "Not sure — open to recommendations", score: 2 },
+      { label: "The owner or operations leader directly.", points: 10, disqualify: false },
+      { label: "A dedicated plant or quality manager.", points: 7, disqualify: false },
+      { label: "We rely on external contractors.", points: 2, disqualify: false },
+      { label: "There is no clear owner of process standardization.", points: 5, disqualify: false },
+    ],
+  },
+  {
+    id: 6,
+    text: "This program requires an investment of $5,800–$6,000 and 2–3 hours per week of shop-floor work over 12 weeks. How would you describe your readiness?",
+    subtext: null,
+    options: [
+      { label: "We have both the budget and the internal capacity to execute.", points: 10, disqualify: false },
+      { label: "We have the budget, but we lack internal capacity.", points: 5, disqualify: false },
+      { label: "We have the time, but the budget is currently constrained.", points: 0, disqualify: true },
+      { label: "We are not ready to commit at this level.", points: 0, disqualify: true },
     ],
   },
 ];

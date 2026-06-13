@@ -1,36 +1,60 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { questions } from "./questions";
-import { calculateScore, ScoreResult as ScoreResultType } from "./scoring";
+import { scoreLead, LeadTier } from "./scoring";
 import ProgressBar from "./ProgressBar";
 import QuestionCard from "./QuestionCard";
 import ScoreResult from "./ScoreResult";
 
 type Phase = "intro" | "quiz" | "result";
 
+interface EvalResult {
+  tier: LeadTier;
+  totalPoints: number;
+}
+
+function evaluate(answers: Record<number, number>): EvalResult {
+  let totalPoints = 0;
+  let hasDisqualifier = false;
+
+  for (const question of questions) {
+    const selectedIndex = answers[question.id];
+    if (selectedIndex !== undefined) {
+      const option = question.options[selectedIndex];
+      if (option) {
+        totalPoints += option.points;
+        if (option.disqualify) hasDisqualifier = true;
+      }
+    }
+  }
+
+  return { tier: scoreLead(totalPoints, hasDisqualifier), totalPoints };
+}
+
 export default function QualificationSection() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<number, number>>({});
   const [direction, setDirection] = useState(1);
-  const [result, setResult] = useState<ScoreResultType | null>(null);
+  const [result, setResult] = useState<EvalResult | null>(null);
 
   const currentQuestion = questions[currentIndex];
-  const selectedOptionId = answers[currentQuestion?.id] ?? null;
+  const selectedIndex = answers[currentQuestion?.id] ?? null;
   const isLastQuestion = currentIndex === questions.length - 1;
   const answeredCount = Object.keys(answers).length;
 
-  function handleSelect(optionId: string) {
-    setAnswers((prev) => ({ ...prev, [currentQuestion.id]: optionId }));
+  function handleSelect(index: number) {
+    setAnswers((prev) => ({ ...prev, [currentQuestion.id]: index }));
   }
 
   function handleNext() {
-    if (!selectedOptionId) return;
+    if (selectedIndex === null) return;
+    const updatedAnswers = { ...answers, [currentQuestion.id]: selectedIndex };
     if (isLastQuestion) {
-      const scored = calculateScore({ ...answers, [currentQuestion.id]: selectedOptionId });
-      setResult(scored);
+      setResult(evaluate(updatedAnswers));
       setPhase("result");
     } else {
+      setAnswers(updatedAnswers);
       setDirection(1);
       setCurrentIndex((i) => i + 1);
     }
@@ -74,7 +98,7 @@ export default function QualificationSection() {
               marginBottom: "12px",
             }}
           >
-            Are We the Right Fit?
+            First-Pass Precision System
           </p>
           <h2
             style={{
@@ -85,7 +109,7 @@ export default function QualificationSection() {
               marginBottom: "12px",
             }}
           >
-            5-Question Fit Assessment
+            Is Your Shop a Fit?
           </h2>
           <p
             style={{
@@ -96,12 +120,12 @@ export default function QualificationSection() {
               lineHeight: 1.6,
             }}
           >
-            Answer five quick questions about your engineering situation and we'll tell you honestly whether we're likely to be able to help.
+            Answer six questions about your operation and we'll tell you honestly whether this program will deliver measurable ROI for your shop.
           </p>
         </div>
 
-        {/* Card container */}
-        <div style={{ maxWidth: "560px", margin: "0 auto" }}>
+        {/* Card */}
+        <div style={{ maxWidth: "580px", margin: "0 auto" }}>
           <div
             style={{
               backgroundColor: "rgba(255,255,255,0.04)",
@@ -141,16 +165,16 @@ export default function QualificationSection() {
                       </svg>
                     </div>
                     <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "#fff", marginBottom: "10px" }}>
-                      Takes less than 2 minutes
+                      Takes less than 3 minutes
                     </h3>
                     <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginBottom: "28px" }}>
-                      We'll assess whether your manufacturing challenge is the kind we're built to solve — and give you an honest answer either way.
+                      Six questions about your shop's size, complexity, and readiness. We'll score your answers and give you a straight answer on fit.
                     </p>
                     <ul style={{ textAlign: "left", listStyle: "none", padding: 0, margin: "0 0 28px", display: "flex", flexDirection: "column", gap: "10px" }}>
                       {[
-                        "5 multiple-choice questions",
-                        "Instant fit score with plain-language guidance",
-                        "No email required to see results",
+                        "6 multiple-choice questions",
+                        "Instant result with specific next step",
+                        "No email required to see your result",
                       ].map((item) => (
                         <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.875rem", color: "rgba(255,255,255,0.7)" }}>
                           <span style={{ color: "#BF9F5A", flexShrink: 0 }}>
@@ -199,7 +223,7 @@ export default function QualificationSection() {
 
                   <QuestionCard
                     question={currentQuestion}
-                    selectedOptionId={selectedOptionId}
+                    selectedIndex={selectedIndex}
                     onSelect={handleSelect}
                     direction={direction}
                   />
@@ -232,21 +256,21 @@ export default function QualificationSection() {
                     </button>
                     <button
                       onClick={handleNext}
-                      disabled={!selectedOptionId}
+                      disabled={selectedIndex === null}
                       style={{
                         flex: 1,
                         padding: "13px 24px",
                         borderRadius: "12px",
-                        backgroundColor: selectedOptionId ? "#BF9F5A" : "rgba(255,255,255,0.08)",
-                        color: selectedOptionId ? "#0F1B27" : "rgba(255,255,255,0.3)",
+                        backgroundColor: selectedIndex !== null ? "#BF9F5A" : "rgba(255,255,255,0.08)",
+                        color: selectedIndex !== null ? "#0F1B27" : "rgba(255,255,255,0.3)",
                         fontWeight: 700,
                         fontSize: "0.9375rem",
                         border: "none",
-                        cursor: selectedOptionId ? "pointer" : "not-allowed",
+                        cursor: selectedIndex !== null ? "pointer" : "not-allowed",
                         transition: "background-color 0.2s ease, color 0.2s ease, filter 0.15s ease",
                       }}
                       onMouseEnter={(e) => {
-                        if (selectedOptionId) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)";
+                        if (selectedIndex !== null) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)";
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1)";
@@ -272,7 +296,11 @@ export default function QualificationSection() {
                   exit={{ opacity: 0, y: -16 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <ScoreResult result={result} onRetake={handleRetake} />
+                  <ScoreResult
+                    tier={result.tier}
+                    totalPoints={result.totalPoints}
+                    onRetake={handleRetake}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
