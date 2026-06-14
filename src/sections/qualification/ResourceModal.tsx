@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { LeadTier, tierConfig } from "./scoring";
 
+const AIRTABLE_ENDPOINT_FALLBACK = "https://api.airtable.com/v0/appoZcE3LSbmki0aE/Table%201";
+
 interface ResourceModalProps {
   tier: LeadTier;
   onClose: () => void;
@@ -11,6 +13,7 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const cfg = tierConfig[tier];
@@ -33,20 +36,82 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
     if (e.target === overlayRef.current) onClose();
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) {
-      setError("Please fill in both fields.");
+    setError(null);
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+
+    if (!trimmedName || trimmedName.length < 2) {
+      setError("Please enter your full name (at least 2 characters).");
       return;
     }
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email.trim())) {
+
+    if (!trimmedEmail) {
+      setError("Please enter your email address.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
       setError("Please enter a valid email address.");
       return;
     }
-    setError(null);
-    setSubmitted(true);
-    window.open("/First_Pass_CNC_Tolerance_Short_Ebook.pdf", "_blank", "noopener,noreferrer");
+
+    setIsSubmitting(true);
+
+    try {
+      const airtableEndpoint = import.meta.env.VITE_AIRTABLE_ENDPOINT || AIRTABLE_ENDPOINT_FALLBACK;
+      const airtableToken = import.meta.env.VITE_AIRTABLE_TOKEN;
+
+      if (!airtableToken) {
+        throw new Error("Airtable configuration is missing. Please contact support.");
+      }
+
+      const payload = {
+        records: [
+          {
+            fields: {
+              "Your name": trimmedName,
+              "Work email": trimmedEmail,
+            },
+          },
+        ],
+      };
+
+      const response = await fetch(airtableEndpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${airtableToken}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        result = { error: { message: responseText } };
+      }
+
+      if (!response.ok) {
+        const errorMsg = result?.error?.message || result?.error || "Failed to submit";
+        throw new Error(errorMsg);
+      }
+
+      setSubmitted(true);
+      window.open("/First_Pass_CNC_Tolerance_Short_Ebook.pdf", "_blank", "noopener,noreferrer");
+    } catch (err) {
+      console.error("Resource modal submission error:", err);
+      const msg = err instanceof Error ? err.message : "An error occurred";
+      setError(`Unable to submit: ${msg}. Please try again.`);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -237,6 +302,7 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                     fontSize: "13px",
                     color: "#F87171",
                     marginTop: "12px",
+                    lineHeight: 1.5,
                   }}
                 >
                   {error}
@@ -245,6 +311,7 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
 
               <button
                 type="submit"
+                disabled={isSubmitting}
                 style={{
                   display: "block",
                   width: "100%",
@@ -258,13 +325,16 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                   fontWeight: 700,
                   textTransform: "uppercase",
                   fontSize: "18px",
-                  cursor: "pointer",
-                  transition: "filter 150ms ease",
+                  cursor: isSubmitting ? "not-allowed" : "pointer",
+                  opacity: isSubmitting ? 0.6 : 1,
+                  transition: "filter 150ms ease, opacity 150ms ease",
                 }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.1)")}
+                onMouseEnter={(e) => {
+                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.1)";
+                }}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.filter = "brightness(1)")}
               >
-                Get My Resource
+                {isSubmitting ? "Submitting..." : "Send My Resource"}
               </button>
             </form>
           </>
