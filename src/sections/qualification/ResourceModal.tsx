@@ -264,7 +264,7 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                 onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.1)")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.filter = "brightness(1)")}
               >
-                Send My Resource
+                Get My Resource
               </button>
             </form>
           </>
