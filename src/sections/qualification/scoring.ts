@@ -15,7 +15,7 @@ export const tierConfig: Record<
     headline: "You're a Strong Fit.",
     body: "Your shop profile aligns closely with the First-Pass Precision System. You'll be directed to book a 45-minute discovery call, and your answers will be shared with the advisor in advance.",
     cta_label: "JOIN THE WAITLIST",
-    cta_url: "[PLACEHOLDER — insert Calendly or booking link]",
+    cta_url: "https://chat.whatsapp.com/EPGAHDPjoi5AOkrPmgyVa1",
     color: "#2D6A4F",
   },
   STANDARD: {
