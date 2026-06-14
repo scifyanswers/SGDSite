@@ -61,6 +61,21 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
 
     setIsSubmitting(true);
 
+    const emailDomain = trimmedEmail.split("@")[1]?.toLowerCase();
+    if (emailDomain) {
+      try {
+        const mxResponse = await fetch(`https://dns.google/resolve?name=${emailDomain}&type=MX`);
+        const mxData = await mxResponse.json();
+        if (mxResponse.ok && (!mxData.Answer || mxData.Answer.length === 0)) {
+          setError("That email address can't receive mail. Please provide a real email before the resource can be given.");
+          setIsSubmitting(false);
+          return;
+        }
+      } catch {
+        // Silently continue if MX check fails (network/CORS issue)
+      }
+    }
+
     try {
       const airtableEndpoint = import.meta.env.VITE_AIRTABLE_ENDPOINT || AIRTABLE_ENDPOINT_FALLBACK;
       const airtableToken = import.meta.env.VITE_AIRTABLE_TOKEN;
