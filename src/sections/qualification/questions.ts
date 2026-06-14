@@ -72,7 +72,7 @@ export const questions: Question[] = [
     options: [
       { label: "We have both the budget and the internal capacity to execute.", points: 10, disqualify: false },
       { label: "We have the budget, but we lack internal capacity.", points: 5, disqualify: false },
-      { label: "We have the time, but the budget is currently constrained.", points: 0, disqualify: true },
+      { label: "We have the time, but the budget is currently constrained.", points: 10, disqualify: false },
       { label: "We are not ready to commit at this level.", points: 0, disqualify: true },
     ],
   },
