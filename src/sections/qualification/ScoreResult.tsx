@@ -1,155 +1,144 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { LeadTier, tierConfig } from "./scoring";
+
+interface AnswerEntry {
+  questionId: number;
+  label: string;
+}
 
 interface ScoreResultProps {
   tier: LeadTier;
   totalPoints: number;
-  onRetake: () => void;
+  answers: AnswerEntry[];
 }
 
-const tierVisuals: Record<LeadTier, { bg: string; border: string; badge: string }> = {
-  HIGH: {
-    bg: "rgba(45,106,79,0.12)",
-    border: "rgba(45,106,79,0.4)",
-    badge: "Strong Fit",
-  },
-  STANDARD: {
-    bg: "rgba(146,64,14,0.12)",
-    border: "rgba(146,64,14,0.4)",
-    badge: "Possible Fit",
-  },
-  LOW: {
-    bg: "rgba(107,114,128,0.12)",
-    border: "rgba(107,114,128,0.3)",
-    badge: "Not Yet",
-  },
-  DISQUALIFIED: {
-    bg: "rgba(127,29,29,0.12)",
-    border: "rgba(127,29,29,0.35)",
-    badge: "Not a Fit",
-  },
-};
+export default function ScoreResult({ tier, totalPoints, answers }: ScoreResultProps) {
+  const [reviewOpen, setReviewOpen] = useState(false);
 
-export default function ScoreResult({ tier, totalPoints, onRetake }: ScoreResultProps) {
+  if (answers.length === 0) {
+    return (
+      <p
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 400,
+          color: "#6B7280",
+        }}
+      >
+        Something went wrong. Please refresh and try again.
+      </p>
+    );
+  }
+
   const cfg = tierConfig[tier];
-  const vis = tierVisuals[tier];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      initial={{ scale: 0.96, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      style={{
+        backgroundColor: "#1C1F26",
+        padding: "40px",
+        borderRadius: "0",
+      }}
     >
-      {/* Tier indicator */}
-      <div style={{ textAlign: "center", marginBottom: "28px" }}>
-        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-          <div
-            style={{
-              width: "88px",
-              height: "88px",
-              borderRadius: "50%",
-              border: `3px solid ${cfg.color}`,
-              backgroundColor: vis.bg,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: "2px",
-            }}
-          >
-            <span style={{ fontSize: "1.5rem", fontWeight: 800, color: cfg.color, lineHeight: 1 }}>
-              {totalPoints}
-            </span>
-            <span style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-              pts
-            </span>
-          </div>
-          <span
-            style={{
-              fontSize: "0.7rem",
-              fontWeight: 700,
-              color: cfg.color,
-              textTransform: "uppercase",
-              letterSpacing: "0.09em",
-              padding: "3px 12px",
-              borderRadius: "9999px",
-              border: `1px solid ${vis.border}`,
-              backgroundColor: vis.bg,
-            }}
-          >
-            {vis.badge}
-          </span>
-        </div>
-      </div>
-
-      {/* Headline + body */}
-      <div
+      <p
         style={{
-          backgroundColor: vis.bg,
-          border: `1px solid ${vis.border}`,
-          borderRadius: "14px",
-          padding: "20px 22px",
-          marginBottom: "20px",
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: "48px",
+          color: "#C8873A",
+          lineHeight: 1,
         }}
       >
-        <p style={{ fontSize: "1.0625rem", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-          {cfg.headline}
-        </p>
-        <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.65 }}>
-          {cfg.body}
-        </p>
-      </div>
+        {totalPoints} / 57 pts
+      </p>
 
-      {/* CTA */}
+      <p
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 700,
+          fontSize: "36px",
+          color: cfg.color,
+          marginTop: "16px",
+        }}
+      >
+        {cfg.headline}
+      </p>
+
+      <p
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 400,
+          fontSize: "16px",
+          color: "#F0EDE8",
+          lineHeight: 1.6,
+          maxWidth: "540px",
+          marginTop: "16px",
+        }}
+      >
+        {cfg.body}
+      </p>
+
       <a
         href={cfg.cta_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${cfg.cta_label} — ${tier} tier`}
         style={{
           display: "block",
           width: "100%",
+          height: "52px",
+          lineHeight: "52px",
           textAlign: "center",
-          padding: "14px 24px",
-          borderRadius: "12px",
+          borderRadius: "0",
           backgroundColor: cfg.color,
-          color: "#fff",
+          color: "#F0EDE8",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
-          fontSize: "0.9375rem",
+          textTransform: "uppercase",
+          fontSize: "18px",
           textDecoration: "none",
-          marginBottom: "12px",
-          transition: "filter 0.15s ease",
+          marginTop: "32px",
         }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.12)")}
-        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1)")}
       >
         {cfg.cta_label}
       </a>
 
       <button
-        onClick={onRetake}
+        onClick={() => setReviewOpen((v) => !v)}
         style={{
           display: "block",
-          width: "100%",
-          textAlign: "center",
-          padding: "11px 24px",
-          borderRadius: "12px",
-          backgroundColor: "transparent",
-          border: "1.5px solid rgba(255,255,255,0.15)",
-          color: "rgba(255,255,255,0.5)",
-          fontWeight: 500,
-          fontSize: "0.875rem",
+          background: "none",
+          border: "none",
+          padding: 0,
+          fontFamily: "'Inter', sans-serif",
+          fontSize: "14px",
+          color: "#6B7280",
+          textDecoration: "underline",
           cursor: "pointer",
-          transition: "color 0.15s ease, border-color 0.15s ease",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.8)";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.3)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.5)";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)";
+          marginTop: "24px",
         }}
       >
-        Retake the assessment
+        {reviewOpen ? "Hide your answers" : "Review your answers"}
       </button>
+
+      {reviewOpen && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
+          {answers.map((a) => (
+            <span
+              key={a.questionId}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "13px",
+                color: "#6B7280",
+              }}
+            >
+              Q{a.questionId} — {a.label}
+            </span>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 }

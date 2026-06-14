@@ -1,31 +1,48 @@
+import { motion } from "framer-motion";
+
 interface ProgressBarProps {
-  current: number;
-  total: number;
+  currentStep: number;
+  totalSteps: number;
 }
 
-export default function ProgressBar({ current, total }: ProgressBarProps) {
-  const pct = Math.round((current / total) * 100);
+export default function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
+  const pct = (currentStep / totalSteps) * 100;
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-2">
-        <span style={{ fontSize: "0.75rem", color: "#BF9F5A", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-          Question {current} of {total}
-        </span>
-        <span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)" }}>
-          {pct}% complete
-        </span>
-      </div>
-      <div style={{ height: "4px", borderRadius: "9999px", backgroundColor: "rgba(255,255,255,0.1)", overflow: "hidden" }}>
-        <div
+    <div
+      role="progressbar"
+      aria-valuenow={currentStep}
+      aria-valuemax={totalSteps}
+      style={{ width: "100%" }}
+    >
+      <div
+        style={{
+          height: "4px",
+          backgroundColor: "#1C1F26",
+          width: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <motion.div
+          layout
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
           style={{
             height: "100%",
-            borderRadius: "9999px",
-            backgroundColor: "#BF9F5A",
+            backgroundColor: "#C8873A",
             width: `${pct}%`,
-            transition: "width 0.4s ease",
           }}
         />
+      </div>
+      <div style={{ textAlign: "right", marginTop: "6px" }}>
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "12px",
+            color: "#6B7280",
+          }}
+        >
+          Question {currentStep} of {totalSteps}
+        </span>
       </div>
     </div>
   );

@@ -8,54 +8,60 @@ import ScoreResult from "./ScoreResult";
 
 type Phase = "intro" | "quiz" | "result";
 
+interface AnswerEntry {
+  questionId: number;
+  label: string;
+}
+
 interface EvalResult {
   tier: LeadTier;
   totalPoints: number;
+  answers: AnswerEntry[];
 }
 
-function evaluate(answers: Record<number, number>): EvalResult {
+function evaluate(labelAnswers: Record<number, string>): EvalResult {
   let totalPoints = 0;
   let hasDisqualifier = false;
+  const answers: AnswerEntry[] = [];
 
   for (const question of questions) {
-    const selectedIndex = answers[question.id];
-    if (selectedIndex !== undefined) {
-      const option = question.options[selectedIndex];
+    const selectedLabel = labelAnswers[question.id];
+    if (selectedLabel !== undefined) {
+      const option = question.options.find((o) => o.label === selectedLabel);
       if (option) {
         totalPoints += option.points;
         if (option.disqualify) hasDisqualifier = true;
+        answers.push({ questionId: question.id, label: selectedLabel });
       }
     }
   }
 
-  return { tier: scoreLead(totalPoints, hasDisqualifier), totalPoints };
+  return { tier: scoreLead(totalPoints, hasDisqualifier), totalPoints, answers };
 }
 
 export default function QualificationSection() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [direction, setDirection] = useState(1);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
   const [result, setResult] = useState<EvalResult | null>(null);
 
   const currentQuestion = questions[currentIndex];
-  const selectedIndex = answers[currentQuestion?.id] ?? null;
+  const selectedOption = answers[currentQuestion?.id] ?? null;
   const isLastQuestion = currentIndex === questions.length - 1;
   const answeredCount = Object.keys(answers).length;
 
-  function handleSelect(index: number) {
-    setAnswers((prev) => ({ ...prev, [currentQuestion.id]: index }));
+  function handleSelect(label: string) {
+    setAnswers((prev) => ({ ...prev, [currentQuestion.id]: label }));
   }
 
   function handleNext() {
-    if (selectedIndex === null) return;
-    const updatedAnswers = { ...answers, [currentQuestion.id]: selectedIndex };
+    if (selectedOption === null) return;
+    const updatedAnswers = { ...answers, [currentQuestion.id]: selectedOption };
     if (isLastQuestion) {
       setResult(evaluate(updatedAnswers));
       setPhase("result");
     } else {
       setAnswers(updatedAnswers);
-      setDirection(1);
       setCurrentIndex((i) => i + 1);
     }
   }
@@ -65,14 +71,12 @@ export default function QualificationSection() {
       setPhase("intro");
       return;
     }
-    setDirection(-1);
     setCurrentIndex((i) => i - 1);
   }
 
   function handleRetake() {
     setAnswers({});
     setCurrentIndex(0);
-    setDirection(1);
     setResult(null);
     setPhase("intro");
   }
@@ -218,14 +222,13 @@ export default function QualificationSection() {
                   transition={{ duration: 0.25 }}
                 >
                   <div style={{ marginBottom: "28px" }}>
-                    <ProgressBar current={currentIndex + 1} total={questions.length} />
+                    <ProgressBar currentStep={currentIndex + 1} totalSteps={questions.length} />
                   </div>
 
                   <QuestionCard
                     question={currentQuestion}
-                    selectedIndex={selectedIndex}
+                    selectedOption={selectedOption}
                     onSelect={handleSelect}
-                    direction={direction}
                   />
 
                   <div style={{ display: "flex", gap: "10px", marginTop: "28px" }}>
@@ -256,21 +259,21 @@ export default function QualificationSection() {
                     </button>
                     <button
                       onClick={handleNext}
-                      disabled={selectedIndex === null}
+                      disabled={selectedOption === null}
                       style={{
                         flex: 1,
                         padding: "13px 24px",
                         borderRadius: "12px",
-                        backgroundColor: selectedIndex !== null ? "#BF9F5A" : "rgba(255,255,255,0.08)",
-                        color: selectedIndex !== null ? "#0F1B27" : "rgba(255,255,255,0.3)",
+                        backgroundColor: selectedOption !== null ? "#BF9F5A" : "rgba(255,255,255,0.08)",
+                        color: selectedOption !== null ? "#0F1B27" : "rgba(255,255,255,0.3)",
                         fontWeight: 700,
                         fontSize: "0.9375rem",
                         border: "none",
-                        cursor: selectedIndex !== null ? "pointer" : "not-allowed",
+                        cursor: selectedOption !== null ? "pointer" : "not-allowed",
                         transition: "background-color 0.2s ease, color 0.2s ease, filter 0.15s ease",
                       }}
                       onMouseEnter={(e) => {
-                        if (selectedIndex !== null) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)";
+                        if (selectedOption !== null) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)";
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1)";
@@ -299,8 +302,36 @@ export default function QualificationSection() {
                   <ScoreResult
                     tier={result.tier}
                     totalPoints={result.totalPoints}
-                    onRetake={handleRetake}
+                    answers={result.answers}
                   />
+                  <button
+                    onClick={handleRetake}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "center",
+                      padding: "11px 24px",
+                      borderRadius: "12px",
+                      backgroundColor: "transparent",
+                      border: "1.5px solid rgba(255,255,255,0.15)",
+                      color: "rgba(255,255,255,0.5)",
+                      fontWeight: 500,
+                      fontSize: "0.875rem",
+                      cursor: "pointer",
+                      marginTop: "12px",
+                      transition: "color 0.15s ease, border-color 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.8)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.3)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.5)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)";
+                    }}
+                  >
+                    Retake the assessment
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
