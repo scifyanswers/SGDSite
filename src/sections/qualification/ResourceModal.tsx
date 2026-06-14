@@ -4,6 +4,94 @@ import { LeadTier, tierConfig } from "./scoring";
 
 const AIRTABLE_ENDPOINT_FALLBACK = "https://api.airtable.com/v0/appoZcE3LSbmki0aE/Table%201";
 
+// Known disposable / temporary email domains to reject
+const DISPOSABLE_DOMAINS = new Set([
+  "mailinator.com", "temp-mail.org", "guerrillamail.com", "10minutemail.com",
+  "throwam.com", "yopmail.com", "trashmail.com", "fakeinbox.com",
+  "maildrop.cc", "sharklasers.com", "guerrillamailblock.com", "grr.la",
+  "guerrillamail.info", "guerrillamail.biz", "guerrillamail.de",
+  "guerrillamail.net", "guerrillamail.org", "spam4.me", "getairmail.com",
+  "dispostable.com", "mailnull.com", "spamgourmet.com", "spamgourmet.net",
+  "spamgourmet.org", "spamspot.com", "tempr.email", "discard.email",
+  "discardmail.com", "discardmail.de", "spamhereplease.com",
+  "hartbot.de", "crap.handcrafted.jp", "objectmail.com", "obobbo.com",
+  "mailsac.com", "mailnesia.com", "mytrashmail.com", "trashmail.at",
+  "trashmail.io", "trashmail.me", "trashmail.net", "mintemail.com",
+  "filzmail.com", "spamfree24.org", "spamfree24.de", "spamfree24.eu",
+  "spamfree24.info", "spamfree24.net", "spamfree.eu", "spam.la",
+  "getonemail.com", "tempemail.net", "throwam.com", "throwam.net",
+  "tempail.com", "tempinbox.com", "tempomail.fr", "temporaryemail.net",
+  "throwam.com", "trashdevil.com", "trashdevil.de",
+]);
+
+// Specific email addresses and patterns that are obviously fake/placeholder
+const BLOCKED_EXACT_EMAILS = new Set([
+  "test@test.com", "example@example.com", "abc@abc.com",
+  "noemail@noemail.com", "user@user.com", "admin@admin.com",
+  "email@email.com", "mail@mail.com", "name@name.com",
+  "info@info.com", "none@none.com", "fake@fake.com",
+  "hello@hello.com", "foo@foo.com", "bar@bar.com",
+]);
+
+// Domains that are clearly placeholder / test domains
+const BLOCKED_DOMAINS = new Set([
+  "test.com", "example.com", "example.net", "example.org",
+  "abc.com", "noemail.com", "nomail.com", "fake.com",
+  "notreal.com", "invalid.com", "domain.com",
+]);
+
+// Validate email format and quality. Returns an error string or null if valid.
+function validateEmail(raw: string): string | null {
+  const email = raw.trim().toLowerCase();
+
+  // Basic format check: local@domain.tld
+  const formatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if (!formatRegex.test(email)) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  const [, domain] = email.split("@");
+
+  // Reject domains without at least one dot (no TLD)
+  if (!domain.includes(".")) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  // Reject exact blocked emails
+  if (BLOCKED_EXACT_EMAILS.has(email)) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  // Reject placeholder/test domains
+  if (BLOCKED_DOMAINS.has(domain)) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  // Reject disposable email service domains
+  if (DISPOSABLE_DOMAINS.has(domain)) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  // Reject local parts that look like placeholders (e.g. "test", "abc", "noemail", "user")
+  const [local] = email.split("@");
+  const suspiciousLocals = new Set([
+    "test", "abc", "noemail", "nomail", "fakeemail", "fake",
+    "none", "null", "undefined", "user", "admin", "info",
+    "hello", "foo", "bar", "name", "email", "mail",
+  ]);
+  if (suspiciousLocals.has(local) && BLOCKED_DOMAINS.has(domain)) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  // Check TLD has at least 2 characters
+  const tld = domain.split(".").pop() ?? "";
+  if (tld.length < 2) {
+    return "Please provide a valid business or personal email address. Temporary, fake, or invalid email addresses cannot be accepted and access to this resource will remain locked until a valid email is provided.";
+  }
+
+  return null;
+}
+
 interface ResourceModalProps {
   tier: LeadTier;
   onClose: () => void;
@@ -14,8 +102,11 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
   const cfg = tierConfig[tier];
 
   useEffect(() => {
@@ -36,26 +127,36 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
     if (e.target === overlayRef.current) onClose();
   }
 
+  // Clear email error as the user types so they get immediate feedback when fixed
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
+    if (emailError) {
+      const err = validateEmail(e.target.value);
+      if (!err) setEmailError(null);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    setGeneralError(null);
+    setNameError(null);
+    setEmailError(null);
 
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
 
+    // Validate name
     if (!trimmedName || trimmedName.length < 2) {
-      setError("Please enter your full name (at least 2 characters).");
+      setNameError("Please enter your full name (at least 2 characters).");
       return;
     }
 
-    if (!trimmedEmail) {
-      setError("Please enter your email address.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmedEmail)) {
-      setError("Please enter a valid email address.");
+    // Validate email — must pass before any resource access
+    const emailValidationError = validateEmail(trimmedEmail);
+    if (emailValidationError) {
+      setEmailError(emailValidationError);
+      // Set focus back to the email field
+      setTimeout(() => emailInputRef.current?.focus(), 0);
       return;
     }
 
@@ -103,16 +204,19 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
         throw new Error(errorMsg);
       }
 
+      // Only reveal/deliver the resource after successful submission with a valid email
       setSubmitted(true);
       window.open("/First_Pass_CNC_Tolerance_Short_Ebook.pdf", "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Resource modal submission error:", err);
       const msg = err instanceof Error ? err.message : "An error occurred";
-      setError(`Unable to submit: ${msg}. Please try again.`);
+      setGeneralError(`Unable to submit: ${msg}. Please try again.`);
     } finally {
       setIsSubmitting(false);
     }
   }
+
+  const emailHasError = !!emailError;
 
   return (
     <motion.div
@@ -212,6 +316,7 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
 
             <form onSubmit={handleSubmit} noValidate>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {/* Name field */}
                 <div>
                   <label
                     htmlFor="resource-name"
@@ -232,14 +337,14 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                     id="resource-name"
                     type="text"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => { setName(e.target.value); if (nameError) setNameError(null); }}
                     placeholder="Your full name"
                     style={{
                       width: "100%",
                       height: "48px",
                       padding: "0 16px",
                       backgroundColor: "#0F1117",
-                      border: "1px solid #2D3139",
+                      border: `1px solid ${nameError ? "#EF4444" : "#2D3139"}`,
                       borderRadius: "0",
                       fontFamily: "'Inter', sans-serif",
                       fontSize: "15px",
@@ -248,11 +353,25 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                       boxSizing: "border-box",
                       transition: "border-color 200ms ease",
                     }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "#C8873A")}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = "#2D3139")}
+                    onFocus={(e) => { if (!nameError) e.currentTarget.style.borderColor = "#C8873A"; }}
+                    onBlur={(e) => { if (!nameError) e.currentTarget.style.borderColor = "#2D3139"; }}
                   />
+                  {nameError && (
+                    <p
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "12px",
+                        color: "#F87171",
+                        marginTop: "6px",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {nameError}
+                    </p>
+                  )}
                 </div>
 
+                {/* Email field */}
                 <div>
                   <label
                     htmlFor="resource-email"
@@ -270,17 +389,20 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                     Email
                   </label>
                   <input
+                    ref={emailInputRef}
                     id="resource-email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     placeholder="you@yourshop.com"
+                    aria-invalid={emailHasError}
+                    aria-describedby={emailHasError ? "email-error-msg" : undefined}
                     style={{
                       width: "100%",
                       height: "48px",
                       padding: "0 16px",
                       backgroundColor: "#0F1117",
-                      border: "1px solid #2D3139",
+                      border: `1px solid ${emailHasError ? "#EF4444" : "#2D3139"}`,
                       borderRadius: "0",
                       fontFamily: "'Inter', sans-serif",
                       fontSize: "15px",
@@ -289,13 +411,28 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                       boxSizing: "border-box",
                       transition: "border-color 200ms ease",
                     }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "#C8873A")}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = "#2D3139")}
+                    onFocus={(e) => { if (!emailHasError) e.currentTarget.style.borderColor = "#C8873A"; }}
+                    onBlur={(e) => { if (!emailHasError) e.currentTarget.style.borderColor = "#2D3139"; }}
                   />
+                  {emailHasError && (
+                    <p
+                      id="email-error-msg"
+                      role="alert"
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "12px",
+                        color: "#F87171",
+                        marginTop: "6px",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {emailError}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {error && (
+              {generalError && (
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
@@ -305,7 +442,7 @@ export default function ResourceModal({ tier, onClose }: ResourceModalProps) {
                     lineHeight: 1.5,
                   }}
                 >
-                  {error}
+                  {generalError}
                 </p>
               )}
 
