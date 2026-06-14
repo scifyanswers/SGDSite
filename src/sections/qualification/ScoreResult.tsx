@@ -1,151 +1,194 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { LeadTier, tierConfig } from "./scoring";
+
+interface AnswerSummary {
+  questionId: number;
+  label: string;
+}
 
 interface ScoreResultProps {
   tier: LeadTier;
   totalPoints: number;
+  answers: AnswerSummary[];
   onRetake: () => void;
 }
 
-const tierVisuals: Record<LeadTier, { bg: string; border: string; badge: string }> = {
-  HIGH: {
-    bg: "rgba(45,106,79,0.12)",
-    border: "rgba(45,106,79,0.4)",
-    badge: "Strong Fit",
-  },
-  STANDARD: {
-    bg: "rgba(146,64,14,0.12)",
-    border: "rgba(146,64,14,0.4)",
-    badge: "Possible Fit",
-  },
-  LOW: {
-    bg: "rgba(107,114,128,0.12)",
-    border: "rgba(107,114,128,0.3)",
-    badge: "Not Yet",
-  },
-  DISQUALIFIED: {
-    bg: "rgba(127,29,29,0.12)",
-    border: "rgba(127,29,29,0.35)",
-    badge: "Not a Fit",
-  },
-};
-
-export default function ScoreResult({ tier, totalPoints, onRetake }: ScoreResultProps) {
+export default function ScoreResult({ tier, totalPoints, answers, onRetake }: ScoreResultProps) {
+  const [accordionOpen, setAccordionOpen] = useState(false);
   const cfg = tierConfig[tier];
-  const vis = tierVisuals[tier];
+
+  if (totalPoints === 0 && answers.length === 0) {
+    return (
+      <div
+        style={{
+          backgroundColor: "#1C1F26",
+          padding: "40px",
+          borderRadius: 0,
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 400,
+            fontSize: "16px",
+            color: "#6B7280",
+          }}
+        >
+          Something went wrong. Please refresh and try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      initial={{ scale: 0.96, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      style={{
+        backgroundColor: "#1C1F26",
+        padding: "40px",
+        borderRadius: 0,
+      }}
     >
-      {/* Tier indicator */}
-      <div style={{ textAlign: "center", marginBottom: "28px" }}>
-        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-          <div
-            style={{
-              width: "88px",
-              height: "88px",
-              borderRadius: "50%",
-              border: `3px solid ${cfg.color}`,
-              backgroundColor: vis.bg,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: "2px",
-            }}
-          >
-            <span style={{ fontSize: "1.5rem", fontWeight: 800, color: cfg.color, lineHeight: 1 }}>
-              {totalPoints}
-            </span>
-            <span style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-              pts
-            </span>
-          </div>
-          <span
-            style={{
-              fontSize: "0.7rem",
-              fontWeight: 700,
-              color: cfg.color,
-              textTransform: "uppercase",
-              letterSpacing: "0.09em",
-              padding: "3px 12px",
-              borderRadius: "9999px",
-              border: `1px solid ${vis.border}`,
-              backgroundColor: vis.bg,
-            }}
-          >
-            {vis.badge}
-          </span>
-        </div>
-      </div>
-
-      {/* Headline + body */}
-      <div
+      {/* Score readout */}
+      <p
         style={{
-          backgroundColor: vis.bg,
-          border: `1px solid ${vis.border}`,
-          borderRadius: "14px",
-          padding: "20px 22px",
-          marginBottom: "20px",
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: "48px",
+          fontWeight: 400,
+          color: "#C8873A",
+          margin: 0,
+          lineHeight: 1,
         }}
       >
-        <p style={{ fontSize: "1.0625rem", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>
-          {cfg.headline}
-        </p>
-        <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.65 }}>
-          {cfg.body}
-        </p>
-      </div>
+        {totalPoints} / 57 pts
+      </p>
+
+      {/* Tier headline */}
+      <p
+        style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 700,
+          fontSize: "36px",
+          color: cfg.color,
+          margin: "16px 0 0",
+          lineHeight: 1.15,
+        }}
+      >
+        {cfg.headline}
+      </p>
+
+      {/* Body copy */}
+      <p
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 400,
+          fontSize: "16px",
+          color: "#F0EDE8",
+          maxWidth: "540px",
+          lineHeight: 1.6,
+          marginTop: "16px",
+          marginBottom: 0,
+        }}
+      >
+        {cfg.body}
+      </p>
 
       {/* CTA */}
       <a
         href={cfg.cta_url}
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
-          display: "block",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           width: "100%",
-          textAlign: "center",
-          padding: "14px 24px",
-          borderRadius: "12px",
+          height: "52px",
           backgroundColor: cfg.color,
-          color: "#fff",
+          color: "#F0EDE8",
+          fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 700,
-          fontSize: "0.9375rem",
+          fontSize: "18px",
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
           textDecoration: "none",
-          marginBottom: "12px",
-          transition: "filter 0.15s ease",
+          borderRadius: 0,
+          marginTop: "32px",
+          border: "none",
+          cursor: "pointer",
         }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.12)")}
-        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1)")}
       >
         {cfg.cta_label}
       </a>
 
+      {/* Answer summary accordion */}
+      {answers.length > 0 && (
+        <div style={{ marginTop: "24px" }}>
+          <button
+            onClick={() => setAccordionOpen((o) => !o)}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 400,
+              fontSize: "14px",
+              color: "#6B7280",
+              textDecoration: "underline",
+            }}
+          >
+            {accordionOpen ? "Hide your answers" : "Review your answers"}
+          </button>
+
+          {accordionOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                marginTop: "14px",
+              }}
+            >
+              {answers.map(({ questionId, label }) => (
+                <p
+                  key={questionId}
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "13px",
+                    color: "#6B7280",
+                    margin: 0,
+                  }}
+                >
+                  Q{questionId} — {label}
+                </p>
+              ))}
+            </motion.div>
+          )}
+        </div>
+      )}
+
+      {/* Retake */}
       <button
         onClick={onRetake}
         style={{
           display: "block",
-          width: "100%",
-          textAlign: "center",
-          padding: "11px 24px",
-          borderRadius: "12px",
-          backgroundColor: "transparent",
-          border: "1.5px solid rgba(255,255,255,0.15)",
-          color: "rgba(255,255,255,0.5)",
-          fontWeight: 500,
-          fontSize: "0.875rem",
+          marginTop: "20px",
+          background: "none",
+          border: "none",
+          padding: 0,
           cursor: "pointer",
-          transition: "color 0.15s ease, border-color 0.15s ease",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.8)";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.3)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.5)";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)";
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 400,
+          fontSize: "13px",
+          color: "#6B7280",
+          textDecoration: "underline",
         }}
       >
         Retake the assessment
