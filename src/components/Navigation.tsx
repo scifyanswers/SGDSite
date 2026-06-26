@@ -18,6 +18,8 @@ export default function Navigation() {
     }
   };
 
+  const isQualifyPage = location.pathname === "/qualify";
+
   return (
     <nav className="sticky top-0 z-50 bg-[#0F1B27]/75 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6">
@@ -61,6 +63,16 @@ export default function Navigation() {
             >
               About
             </button>
+            <Link
+              to="/qualify"
+              className={`text-sm font-medium transition px-3 py-1.5 rounded-md border ${
+                isQualifyPage
+                  ? "border-[#BF9F5A] text-[#BF9F5A]"
+                  : "border-white/20 text-white/80 hover:text-white hover:border-white/40"
+              }`}
+            >
+              Check Fit
+            </Link>
             <button
               onClick={() => scrollTo("contact")}
               className="bg-copper text-navy px-5 py-2 rounded-md font-bold text-sm hover:bg-opacity-90 transition"
@@ -104,6 +116,17 @@ export default function Navigation() {
             >
               About
             </button>
+            <Link
+              to="/qualify"
+              onClick={() => setOpen(false)}
+              className={`block w-full text-left px-4 py-3 rounded-md transition ${
+                isQualifyPage
+                  ? "text-[#BF9F5A] bg-[#BF9F5A]/10"
+                  : "text-white/80 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              Check Fit
+            </Link>
             <button
               onClick={() => scrollTo("contact")}
               className="block w-full text-left px-4 py-3 rounded-md
